@@ -31,7 +31,7 @@ pip install pandas numpy scikit-learn matplotlib seaborn faker fastapi uvicorn
 
 ## Usage
 
-The API server can be started using the provided PowerShell scripts and will be available at port 5000.
+The API server can be started using the provided PowerShell scripts and will be available at port 8000.
 
 ### API Endpoints
 
@@ -75,13 +75,13 @@ Valid insight types:
 You can test the API using curl:
 
 ```bash
-curl http://154.0.164.254:5000/
+curl http://154.0.164.254:8000/
 ```
 
 For prediction:
 
 ```bash
-curl -X POST http://154.0.164.254:5000/predict \
+curl -X POST http://154.0.164.254:8000/predict \
   -H "Content-Type: application/json" \
   -d '{"case_type": "Family Law", "complexity": "Medium", "client_age": 35, "client_income_level": "Medium", "days_open": 30, "escalated": false}'
 ```

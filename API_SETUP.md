@@ -21,7 +21,7 @@ This document explains how to set up and run the Case AI Analytics API server on
    .\run_server.ps1
    ```
 
-   The server will start on port 5000.
+   The server will start on port 8000.
 
 ### Linux/macOS
 
@@ -35,7 +35,7 @@ This document explains how to set up and run the Case AI Analytics API server on
    ./run_server.sh
    ```
 
-   The server will start on port 5000 with nohup, so it continues running even if you close the terminal.
+   The server will start on port 8000 with nohup, so it continues running even if you close the terminal.
 
 ## Manual Setup (All Platforms)
 
@@ -48,7 +48,7 @@ If you prefer to run the server manually:
 
 2. Start the server:
    ```
-   python -m uvicorn api:app --host 0.0.0.0 --port 5000
+   python -m uvicorn api:app --host 0.0.0.0 --port 8000
    ```
 
 ## Testing the API
@@ -56,7 +56,7 @@ If you prefer to run the server manually:
 Once the server is running, you can test it using:
 
 ```
-curl http://154.0.164.254:5000/
+curl http://154.0.164.254:8000/
 ```
 
 ## Available Endpoints
@@ -71,6 +71,6 @@ For more details on request/response formats, see the API documentation in the R
 
 If the server fails to start:
 
-1. Ensure port 5000 is not already in use
+1. Ensure port 8000 is not already in use
 2. Verify that the conda environment has all required dependencies
 3. Check the logs for error messages (server.log for Linux/macOS) 
