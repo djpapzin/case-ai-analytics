@@ -1,0 +1,36 @@
+# Learnings Log
+
+This document is intended to capture the key lessons, challenges, and insights gained throughout the development of the AI Automation Developer Assessment project. Recording these learnings will help us avoid repeating the same mistakes in the future.
+
+## Key Learnings
+- **Data Preprocessing:**
+  - What strategies for handling missing data worked well.
+  - Best practices for merging and joining multiple tables.
+  - Insights on normalization and encoding of categorical variables.
+- **Model Training & Evaluation:**
+  - Effective approaches for tuning model parameters.
+  - Lessons learned from evaluating the model using accuracy, precision, recall, and F1-score.
+  - Observations from feature importance analysis.
+- **NLP & Text Analysis:**
+  - Techniques for processing and extracting insights from textual data (notes and descriptions).
+  - Tools and libraries that proved effective (e.g., spaCy, NLTK).
+- **Integration & Deployment:**
+  - Challenges faced when integrating different components of the project.
+  - Insights from deploying the model as an API using Flask or FastAPI.
+- **General Best Practices:**
+  - Code organization and modularity improvements.
+  - Version control and documentation strategies that enhanced workflow.
+
+## Challenges & Resolutions
+- **Data Quality Issues:** Document any data inconsistencies or missing value challenges and how they were resolved.
+- **Integration Challenges:** Note any problems when integrating the ML model with the AI agent or during API deployment, along with solutions.
+- **Deployment Hurdles:** Describe any issues encountered during deployment and how they were overcome.
+
+## Future Improvements
+- Identify potential areas for enhancement in both the ML model and AI agent.
+- Note any tools, libraries, or methodologies that could improve future projects.
+- Reflect on feedback and adjustments to further streamline the development process.
+
+## Reflection
+- Summarize the overall project experience.
+- Capture any final thoughts or recommendations for similar future projects.

@@ -1,0 +1,61 @@
+# Implementation Plan for AI Automation Developer Assessment
+
+## Overview
+This document outlines the complete plan for implementing the project. The assessment consists of two main parts:
+- **Part A:** Build a machine learning model to predict case outcomes using case management system data.
+- **Part B:** Develop an AI agent to extract insights from the case management data.
+
+## Detailed Plan
+
+### Part A: Machine Learning Model Implementation
+1. **Data Preparation**
+   - **Synthetic Data Generation:** Create at least three related tables (e.g., Cases, Clients, and an optional third table) to mimic a real case management system.
+   - **Preprocessing:** 
+     - Merge/join tables using common keys.
+     - Handle missing values using imputation or removal.
+     - Normalize/scale numerical features.
+     - Encode categorical variables (one-hot encoding or label encoding).
+   - **Bonus:** Implement a time-based train-test split (using older cases for training and newer cases for testing).
+
+2. **Model Development**
+   - **Model Selection:** Start with a decision tree model (or explore alternatives like Random Forests or Gradient Boosting) to predict case resolution statuses.
+   - **Training & Evaluation:** 
+     - Train the model on the preprocessed dataset.
+     - Evaluate using metrics such as accuracy, precision, recall, and F1-score.
+     - Analyze feature importance to understand influential factors.
+   - **Bonus:** Deploy the model as an API using Flask or FastAPI.
+
+### Part B: AI Agent for Case Insights
+1. **Data Analysis & Visualization**
+   - Load and process the case management data.
+   - Calculate summary statistics and generate visualizations (e.g., most common case types, average resolution times, assignee performance).
+   - Use NLP techniques to analyze text fields (notes, case descriptions).
+
+2. **AI Agent Implementation**
+   - Develop functions or a class that answers key business questions:
+     - What are the most common types of cases?
+     - Which factors contribute most to resolution time?
+     - Which assignees have the highest resolution rates?
+     - Are there patterns in escalations related to client demographics or case types?
+   - **Bonus:** Implement a chatbot interface (using tools like LangChain or OpenAI’s API) for natural language queries.
+
+## Checklist
+- [ ] Generate synthetic dataset with required tables.
+- [ ] Preprocess data (merge, missing value handling, normalization, encoding).
+- [ ] Implement a time-based train-test split.
+- [ ] Develop and train the machine learning model.
+- [ ] Evaluate model performance (accuracy, precision, recall, F1-score).
+- [ ] Analyze feature importance.
+- [ ] Develop AI agent for case insights.
+- [ ] Implement NLP analysis for text data.
+- [ ] (Bonus) Integrate a chatbot interface.
+- [ ] (Bonus) Deploy the model as an API.
+- [ ] Write comprehensive documentation.
+- [ ] Final testing and code cleanup.
+
+## Timeline & Milestones
+- **Day 1:** Outline plan and design data schema.
+- **Day 2-3:** Generate synthetic dataset and complete data preprocessing.
+- **Day 4-5:** Train and evaluate the ML model.
+- **Day 6:** Develop the AI agent for case insights.
+- **Day 7:** Integrate bonus features, finalize documentation, and prepare for submission.
