@@ -6,6 +6,7 @@ import os
 from typing import List, Dict, Any, Optional
 import json
 import uvicorn
+import numpy as np
 
 # Import project modules
 from data_generator import generate_synthetic_data
@@ -45,13 +46,19 @@ feature_mapping = {}
 # Event handler for startup
 @app.on_event("startup")
 async def startup_event():
-    global model, insights_agent, merged_data
+    global model, insights_agent, merged_data, feature_mapping
     
     # Check if a saved model exists, otherwise generate and train
     if os.path.exists("case_model.pkl"):
         print("Loading existing model...")
         with open("case_model.pkl", "rb") as f:
             model = pickle.load(f)
+        
+        # Load feature mapping
+        if os.path.exists("feature_mapping.json"):
+            with open("feature_mapping.json", "r") as f:
+                feature_mapping = json.load(f)
+                print(f"Loaded feature mapping with {len(feature_mapping)} features")
         
         # Load merged data if it exists
         if os.path.exists("merged_data.csv"):
@@ -78,7 +85,6 @@ async def startup_event():
         insights_agent = CaseInsights(merged_data)
         
         # Save feature names
-        global feature_mapping
         feature_mapping = {col: i for i, col in enumerate(X_train.columns)}
         with open("feature_mapping.json", "w") as f:
             json.dump(feature_mapping, f)
@@ -96,42 +102,67 @@ async def predict(request: PredictionRequest):
         raise HTTPException(status_code=500, detail="Model not loaded")
     
     try:
-        # Convert request to features
-        feature_vector = [0] * len(feature_mapping)
+        # Load feature mapping if it exists but isn't loaded
+        if not feature_mapping and os.path.exists("feature_mapping.json"):
+            with open("feature_mapping.json", "r") as f:
+                feature_mapping = json.load(f)
+                
+        if not feature_mapping:
+            raise HTTPException(status_code=500, detail="Feature mapping not available")
+            
+        # Debug information
+        print(f"Request data: {request.dict()}")
         
-        # Map categorical values to one-hot encoding
-        case_type_col = f"case_type_{request.case_type}"
-        if case_type_col in feature_mapping:
-            feature_vector[feature_mapping[case_type_col]] = 1
-            
-        complexity_col = f"complexity_{request.complexity}"
-        if complexity_col in feature_mapping:
-            feature_vector[feature_mapping[complexity_col]] = 1
-            
-        income_level_col = f"income_level_{request.client_income_level}"
-        if income_level_col in feature_mapping:
-            feature_vector[feature_mapping[income_level_col]] = 1
+        # Get the model's expected feature count
+        n_features = model.n_features_in_ if hasattr(model, 'n_features_in_') else 4
+        print(f"Model expects {n_features} features")
         
-        # Set numerical values
-        if "age" in feature_mapping:
-            feature_vector[feature_mapping["age"]] = request.client_age
+        # Create input data with the correct number of features
+        input_data = np.zeros((1, n_features))
+        
+        # If the model has feature names, use them to map request fields
+        if hasattr(model, 'feature_names_in_'):
+            feature_names = model.feature_names_in_
             
-        if "days_open" in feature_mapping and request.days_open is not None:
-            feature_vector[feature_mapping["days_open"]] = request.days_open
+            # Map numerical features
+            for feature, value in [
+                ('age', request.client_age),
+                ('escalated', 1 if request.escalated else 0),
+                ('resolution_days', request.days_open if request.days_open is not None else 0)
+            ]:
+                if feature in feature_names:
+                    idx = np.where(feature_names == feature)[0][0]
+                    input_data[0, idx] = value
             
-        if "escalated" in feature_mapping:
-            feature_vector[feature_mapping["escalated"]] = 1 if request.escalated else 0
+            # Map categorical features with one-hot encoding
+            for prefix, value in [
+                ('case_type_', request.case_type),
+                ('complexity_', request.complexity),
+                ('income_level_', request.client_income_level)
+            ]:
+                feature = f"{prefix}{value}"
+                if feature in feature_names:
+                    idx = np.where(feature_names == feature)[0][0]
+                    input_data[0, idx] = 1
+        
+        print(f"Input data shape: {input_data.shape}")
         
         # Make prediction
-        prediction_prob = model.predict_proba([feature_vector])[0]
-        prediction_class = model.predict([feature_vector])[0]
+        prediction_prob = model.predict_proba(input_data)[0]
+        prediction_class = model.predict(input_data)[0]
         
-        # Return result
-        return {
+        # Return result with more detailed information
+        result = {
             "prediction": "Resolved" if prediction_class == 1 else "Not Resolved",
             "probability": float(prediction_prob[1])  # Probability of being resolved
         }
+        
+        print(f"Prediction result: {result}")
+        return result
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Prediction error: {str(e)}\n{error_details}")
         raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
 @app.post("/insights")

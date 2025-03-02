@@ -6,7 +6,9 @@ import json
 import sys
 
 # Set the API base URL
-BASE_URL = "http://localhost:8000"
+BASE_URL = "http://localhost:5000"
+# Alternative URL for remote access
+# BASE_URL = "http://154.0.164.254:5000"
 
 def test_root_endpoint():
     """Test the root endpoint"""
