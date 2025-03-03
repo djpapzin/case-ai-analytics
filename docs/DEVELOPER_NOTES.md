@@ -1,111 +1,209 @@
 # Developer Notes
 
-This document contains technical notes and implementation details for the Case AI Analytics project, focusing on key fixes and design decisions.
+## Technical Implementation Details
 
-## Prediction Endpoint Fix
+### Feature Mapping Fix
 
-### Issue: Feature Name Mismatch
+#### Issue
+The prediction endpoint was experiencing feature name mismatches between the input data and the trained model. The model was trained with specific feature names, but the input data had different feature names, causing prediction failures.
 
-The prediction endpoint in `api.py` was failing with the following error:
-```
-ValueError: The feature names should match those that were passed during fit.
-Feature names unseen at fit time:
-- assignee_Attorney_10
-- assignee_Attorney_11
-- assignee_Attorney_12
-...
-```
+#### Solution
+1. Implemented a feature mapping system that maintains consistency between input features and model features
+2. Added validation to ensure all required features are present in the input data
+3. Created a mapping between input feature names and model feature names
 
-### Root Cause
-
-The issue was occurring because:
-1. The model was trained with a specific set of features
-2. The prediction endpoint was attempting to create a DataFrame with different feature names
-3. The scikit-learn model was expecting feature names to match exactly those used during training
-
-### Solution Implemented
-
-The fix involved several changes to the `predict` function in `api.py`:
-
-1. **Access Model Feature Names**: Use the `feature_names_in_` attribute of the trained model to determine exactly which features the model expects.
-
-2. **Direct Array Creation**: Instead of trying to create a DataFrame with matching columns, we create a numpy array with the exact number of features the model expects.
-
-3. **Targeted Feature Setting**: We map each request field directly to the corresponding index in the feature array:
-   - For numerical features (like age, resolution_days, escalated), we set values directly
-   - For categorical features with one-hot encoding (like case_type, complexity, income_level), we set the matching one-hot feature to 1
-
-4. **Debug Information**: Added detailed logging to print:
-   - Request data
-   - Model feature names
-   - Input data shape before prediction
-   - Prediction results
-
-### Code Details
-
-Key implementation aspects:
-
+#### Implementation Details
 ```python
-# Get the model's expected feature count
-n_features = model.n_features_in_ if hasattr(model, 'n_features_in_') else 4
+# Feature mapping structure
+feature_mapping = {
+    'resolution_days': 0,
+    'escalated': 1,
+    'age': 3,
+    'client_tenure_days': 4
+}
 
-# Create input data with the correct number of features
-input_data = np.zeros((1, n_features))
+# Input validation
+required_features = ['case_type', 'complexity', 'client_age', 'client_income_level', 'days_open', 'escalated']
+```
 
-# If the model has feature names, use them to map request fields
-if hasattr(model, 'feature_names_in_'):
-    feature_names = model.feature_names_in_
-    
-    # Map numerical features
-    for feature, value in [
-        ('age', request.client_age),
-        ('escalated', 1 if request.escalated else 0),
-        ('resolution_days', request.days_open if request.days_open is not None else 0)
-    ]:
-        if feature in feature_names:
-            idx = np.where(feature_names == feature)[0][0]
-            input_data[0, idx] = value
-    
-    # Map categorical features with one-hot encoding
-    for prefix, value in [
-        ('case_type_', request.case_type),
-        ('complexity_', request.complexity),
-        ('income_level_', request.client_income_level)
-    ]:
-        feature = f"{prefix}{value}"
-        if feature in feature_names:
-            idx = np.where(feature_names == feature)[0][0]
-            input_data[0, idx] = 1
+### Error Handling Improvements
+
+#### Logging System
+- Implemented structured logging for better debugging
+- Added request/response logging for API endpoints
+- Included model prediction details in logs
+
+#### Error Response Format
+```python
+{
+    "error": "Feature validation failed",
+    "details": "Missing required feature: client_age",
+    "timestamp": "2024-03-14T12:00:00Z"
+}
+```
+
+### Testing Framework
+
+#### Test Structure
+- `test_api.py`: Tests all API endpoints
+  - Root endpoint validation
+  - Prediction endpoint functionality
+  - Insights endpoint response format
+- `test_prediction.py`: Focused testing of prediction endpoint
+  - Feature validation
+  - Response format validation
+  - Error handling
+
+#### Test Cases
+```python
+test_cases = [
+    {
+        "case_type": "Family Law",
+        "complexity": "Medium",
+        "client_age": 35,
+        "client_income_level": "Medium",
+        "days_open": 30,
+        "escalated": False
+    },
+    # Additional test cases...
+]
 ```
 
 ## Server Configuration
 
-The API server has been configured to run on port 5000. This is defined in both server scripts:
+### Port Configuration
+- Default port: 5000
+- Configurable through command line arguments
+- Environment variable support: `PORT`
 
-1. `run_server.ps1` - The primary script that activates the conda environment and runs the server
-2. `run_api_server.ps1` - An alternative script with more detailed configuration
+### Debug Mode
+- Enabled with `--debug` flag
+- Provides detailed logging
+- Shows stack traces for errors
 
-Both scripts use `uvicorn` to run the FastAPI application:
+## Model Details
 
-```powershell
-python -m uvicorn api:app --host 0.0.0.0 --port 5000
+### Feature Engineering
+1. **Input Features**:
+   - Case type (categorical)
+   - Complexity level (categorical)
+   - Client age (numerical)
+   - Client income level (categorical)
+   - Days open (numerical)
+   - Escalation status (boolean)
+
+2. **Feature Processing**:
+   - Categorical encoding
+   - Numerical normalization
+   - Feature validation
+
+### Model Architecture
+- Random Forest Classifier
+- Hyperparameters:
+  - n_estimators: 100
+  - max_depth: 10
+  - random_state: 42
+
+## API Endpoints
+
+### Prediction Endpoint
+- **URL**: `/predict`
+- **Method**: POST
+- **Input Format**:
+```json
+{
+    "case_type": "string",
+    "complexity": "string",
+    "client_age": "integer",
+    "client_income_level": "string",
+    "days_open": "integer",
+    "escalated": "boolean"
+}
+```
+- **Output Format**:
+```json
+{
+    "prediction": "string",
+    "probability": "float"
+}
 ```
 
-## Testing
-
-Two test scripts have been created:
-
-1. `test_api.py` - Tests all endpoints of the API
-2. `test_prediction.py` - Focuses specifically on testing the prediction endpoint with various case scenarios
-
-The test scripts are designed to be run after the server is started and provide immediate feedback on whether the API is functioning correctly.
+### Insights Endpoint
+- **URL**: `/insights`
+- **Method**: POST
+- **Input Format**:
+```json
+{
+    "insight_type": "string"
+}
+```
+- **Output Format**:
+```json
+{
+    "insights": {
+        "case_types": {
+            "type": "count"
+        },
+        "resolution_factors": {
+            "factor": "impact"
+        }
+    }
+}
+```
 
 ## Future Improvements
 
-Potential areas for future development:
+### Feature Engineering
+1. Add more sophisticated feature engineering
+2. Implement feature importance analysis
+3. Add feature selection based on importance
 
-1. **Feature Engineering**: Explore additional features that could improve prediction accuracy
-2. **Model Versioning**: Implement a system to track model versions and facilitate A/B testing
-3. **User Interface**: Develop a web-based UI for interacting with the API
-4. **Data Visualization**: Add visualization capabilities to better understand model predictions
-5. **Model Explanations**: Implement SHAP or LIME for explaining individual predictions 
+### Model Versioning
+1. Implement model versioning system
+2. Add model performance tracking
+3. Create model comparison tools
+
+### User Interface
+1. Develop web interface for predictions
+2. Add visualization dashboard
+3. Implement user authentication
+
+### Data Visualization
+1. Add case type distribution charts
+2. Implement resolution time analysis
+3. Create performance metrics dashboard
+
+### Model Explanations
+1. Add SHAP value explanations
+2. Implement feature importance visualization
+3. Create case-specific explanation reports
+
+## Troubleshooting Guide
+
+### Common Issues
+
+1. **Feature Name Mismatch**
+   - Check feature_mapping.json
+   - Verify input data format
+   - Validate feature names in model
+
+2. **Model Loading Errors**
+   - Verify model file exists
+   - Check model version compatibility
+   - Validate model format
+
+3. **API Connection Issues**
+   - Check port availability
+   - Verify server status
+   - Check firewall settings
+
+### Debug Mode
+Enable debug mode for detailed logging:
+```bash
+python app.py --debug
+```
+
+### Log Files
+- Server logs: `logs/server.log`
+- Model logs: `logs/model.log`
+- API logs: `logs/api.log` 

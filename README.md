@@ -85,7 +85,7 @@ python app.py --train-model
 python app.py --run-analysis
 
 # Run the API server on a specific port
-python app.py --run-server --port 8000
+python app.py --run-server --port 5000
 ```
 
 Alternatively, you can use the PowerShell scripts in the scripts directory:
@@ -207,9 +207,26 @@ The project includes Python test scripts to verify API functionality:
 Run tests with:
 
 ```bash
-python test_api.py
-python test_prediction.py
+python -m tests.test_api
+python -m tests.test_prediction
 ```
+
+## Recent Updates
+
+### Feature Mapping Fix
+- Resolved feature name mismatch issues in the prediction endpoint
+- Implemented proper feature mapping between input data and model features
+- Added validation to ensure consistent feature names during prediction
+
+### Error Handling Improvements
+- Enhanced error messages for feature validation
+- Added detailed logging for debugging purposes
+- Improved response format for error cases
+
+### Testing Enhancements
+- Added comprehensive test cases for the prediction endpoint
+- Improved test documentation and error reporting
+- Added validation for response formats and data types
 
 ## Project Structure
 
