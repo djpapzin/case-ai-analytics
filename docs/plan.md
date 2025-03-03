@@ -41,20 +41,20 @@ This document outlines the complete plan for implementing the project. The asses
 
 ## Checklist
 - [x] Generate synthetic dataset with required tables.
-- [x] Preprocess data (merge, missing value handling, normalization, encoding).
-- [x] Implement a time-based train-test split.
-- [x] Develop and train the machine learning model.
-- [x] Evaluate model performance (accuracy, precision, recall, F1-score).
-- [x] Analyze feature importance.
-- [x] Develop AI agent for case insights.
-- [x] Implement statistical analysis for case data.
-- [x] Deploy the model as an API (using FastAPI).
-- [x] Set up GitHub repository (case-ai-analytics).
-- [x] Create documentation (README.md, API_SETUP.md).
-- [x] Create server scripts for different platforms (run_server.ps1, run_server.sh).
-- [x] Change API server port from 5000 to 8000 for new project requirements.
-- [x] Create test script for API endpoints.
-- [x] Conduct testing and code cleanup.
+- [] Preprocess data (merge, missing value handling, normalization, encoding).
+- [] Implement a time-based train-test split.
+- [] Develop and train the machine learning model.
+- [] Evaluate model performance (accuracy, precision, recall, F1-score).
+- [] Analyze feature importance.
+- [] Develop AI agent for case insights.
+- [] Implement statistical analysis for case data.
+- [] Deploy the model as an API (using FastAPI).
+- [] Set up GitHub repository (case-ai-analytics).
+- [] Create documentation (README.md, API_SETUP.md).
+- [] Create server scripts for different platforms (run_server.ps1, run_server.sh).
+- [] Change API server port from 5000 to 8000 for new project requirements.
+- [] Create test script for API endpoints.
+- [] Conduct testing and code cleanup.
 
 ## Implementation Notes
 - **API Server Port:** Initially developed with port 5000, updated to port 8000 for new project requirements.
