@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
-from data_generator import generate_synthetic_data
-from data_processor import preprocess_data
-from model_trainer import train_evaluate_model
-from case_insights import CaseInsights
+from src.data.data_generator import generate_synthetic_data
+from src.data.data_processor import preprocess_data
+from src.model.model_trainer import train_evaluate_model
+from src.api.case_insights import CaseInsights
 
 def main():
     print("Step 1: Generating synthetic case management data...")

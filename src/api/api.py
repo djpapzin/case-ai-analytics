@@ -9,10 +9,10 @@ import uvicorn
 import numpy as np
 
 # Import project modules
-from data_generator import generate_synthetic_data
-from data_processor import preprocess_data
-from model_trainer import train_evaluate_model
-from case_insights import CaseInsights
+from src.data.data_generator import generate_synthetic_data
+from src.data.data_processor import preprocess_data
+from src.model.model_trainer import train_evaluate_model
+from src.api.case_insights import CaseInsights
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -49,20 +49,20 @@ async def startup_event():
     global model, insights_agent, merged_data, feature_mapping
     
     # Check if a saved model exists, otherwise generate and train
-    if os.path.exists("case_model.pkl"):
+    if os.path.exists("src/model/case_model.pkl"):
         print("Loading existing model...")
-        with open("case_model.pkl", "rb") as f:
+        with open("src/model/case_model.pkl", "rb") as f:
             model = pickle.load(f)
         
         # Load feature mapping
-        if os.path.exists("feature_mapping.json"):
-            with open("feature_mapping.json", "r") as f:
+        if os.path.exists("config/feature_mapping.json"):
+            with open("config/feature_mapping.json", "r") as f:
                 feature_mapping = json.load(f)
                 print(f"Loaded feature mapping with {len(feature_mapping)} features")
         
         # Load merged data if it exists
-        if os.path.exists("merged_data.csv"):
-            merged_data = pd.read_csv("merged_data.csv")
+        if os.path.exists("src/data/merged_data.csv"):
+            merged_data = pd.read_csv("src/data/merged_data.csv")
             insights_agent = CaseInsights(merged_data)
     else:
         print("Generating data and training model...")
@@ -76,17 +76,17 @@ async def startup_event():
         model, feature_importance = train_evaluate_model(X_train, X_test, y_train, y_test)
         
         # Save the model and data for future use
-        with open("case_model.pkl", "wb") as f:
+        with open("src/model/case_model.pkl", "wb") as f:
             pickle.dump(model, f)
         
-        merged_data.to_csv("merged_data.csv", index=False)
+        merged_data.to_csv("src/data/merged_data.csv", index=False)
         
         # Initialize insights agent
         insights_agent = CaseInsights(merged_data)
         
         # Save feature names
         feature_mapping = {col: i for i, col in enumerate(X_train.columns)}
-        with open("feature_mapping.json", "w") as f:
+        with open("config/feature_mapping.json", "w") as f:
             json.dump(feature_mapping, f)
 
 # Define API endpoints
@@ -103,8 +103,8 @@ async def predict(request: PredictionRequest):
     
     try:
         # Load feature mapping if it exists but isn't loaded
-        if not feature_mapping and os.path.exists("feature_mapping.json"):
-            with open("feature_mapping.json", "r") as f:
+        if not feature_mapping and os.path.exists("config/feature_mapping.json"):
+            with open("config/feature_mapping.json", "r") as f:
                 feature_mapping = json.load(f)
                 
         if not feature_mapping:
