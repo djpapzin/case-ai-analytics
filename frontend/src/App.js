@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Navigation from './components/Navigation';
+import Dashboard from './pages/Dashboard';
 
 // Create a theme instance
 const theme = createTheme({
@@ -26,8 +27,7 @@ function App() {
           <Navigation />
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Routes>
-              {/* Routes will be added here */}
-              <Route path="/" element={<div>Welcome to Case Management System</div>} />
+              <Route path="/" element={<Dashboard />} />
             </Routes>
           </Box>
         </Box>
