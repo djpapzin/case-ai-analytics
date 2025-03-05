@@ -178,13 +178,18 @@ class DataPreprocessor:
         print("Creating target variable...")
         df = self.create_target(df)
         
-        # 5. Encode categorical variables
+        # 5. Identify and encode all categorical columns
         print("Encoding categorical variables...")
-        df = self.encode_categorical(df)
+        categorical_columns = df.select_dtypes(include=['object', 'category']).columns
+        df = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
         
         # 6. Normalize numerical features
         print("Normalizing numerical features...")
-        df = self.normalize_numerical(df)
+        numerical_columns = df.select_dtypes(include=['int64', 'float64']).columns
+        numerical_columns = [col for col in numerical_columns 
+                            if col != 'is_resolved' and not col.startswith(tuple(categorical_columns))]
+        if len(numerical_columns) > 0:
+            df[numerical_columns] = self.scaler.fit_transform(df[numerical_columns])
         
         # 7. Split the data
         print("Splitting data...")
