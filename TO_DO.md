@@ -8,12 +8,17 @@
     - [ ] Verify repository connection (djpapzin/case-ai-analytics)
     - [ ] Confirm main file path (dashboard.py)
     - [ ] Set up environment variables in Streamlit Cloud:
-      - [ ] GEMINI_API_KEY
-      - [ ] OPENAI_API_KEY (optional)
+      - [ ] Add GEMINI_API_KEY in TOML format:
+        ```toml
+        GEMINI_API_KEY = "your-gemini-api-key"
+        ```
+    - [x] Fix requirements.txt compatibility issues:
+      - [x] Update pydantic to >=2.7.4
+      - [x] Update langchain-google-genai to >=0.0.11
     - [ ] Check Python dependencies in requirements.txt
   - [ ] Deploy and verify:
     - [ ] Test initial deployment
-    - [ ] Verify API connections
+    - [ ] Verify Gemini API connection
     - [ ] Check chat functionality
     - [ ] Test data loading
   - [ ] Optimize performance
