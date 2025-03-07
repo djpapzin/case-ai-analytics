@@ -10,6 +10,8 @@ An AI-powered legal case management system that helps law firms and legal depart
 - 🔄 Automated case status updates
 - 📋 Case priority management
 - 👥 Resource allocation suggestions
+- 💬 AI Assistant chatbot for case insights
+- 🔄 Automatic model fallback (Gemini/OpenAI)
 
 ## Architecture
 
@@ -18,12 +20,14 @@ An AI-powered legal case management system that helps law firms and legal depart
 - Random Forest model for predictions
 - SQLite database for data storage
 - Python-based data processing pipeline
+- LangChain for AI chat capabilities
 
 ### Frontend
 - Streamlit dashboard
 - Interactive data visualization
 - Real-time updates
 - Responsive design
+- Integrated AI chatbot interface
 
 ## Getting Started
 
@@ -34,24 +38,23 @@ An AI-powered legal case management system that helps law firms and legal depart
 
 ### API Key Setup
 
-1. **OpenAI API (Primary - Paid)**
-   - Visit [OpenAI API Keys](https://platform.openai.com/settings/organization/api-keys)
-   - Create a new API key
-   - Copy the key to your `.env` file as `OPENAI_API_KEY`
-
-2. **Google Gemini API (Fallback - Free)**
+1. **Google Gemini API (Recommended - Free)**
    - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
    - Create a new API key
    - Copy the key to your `.env` file as `GEMINI_API_KEY`
    - Uses the latest `gemini-2.0-flash` model
-   - Automatically used if OpenAI key is not configured or fails
+
+2. **OpenAI API (Optional - Paid)**
+   - Visit [OpenAI API Keys](https://platform.openai.com/settings/organization/api-keys)
+   - Create a new API key
+   - Copy the key to your `.env` file as `OPENAI_API_KEY`
 
 3. **Environment Setup**
    - Copy `.env.example` to `.env`
-   - Add at least one API key (OpenAI or Gemini)
+   - Add at least one API key (Gemini recommended)
    - The system will automatically use available keys based on the following priority:
-     1. OpenAI if configured
-     2. Gemini as fallback
+     1. Gemini (default - free)
+     2. OpenAI (fallback - paid)
 
 ### Installation
 
@@ -111,7 +114,17 @@ case-management-ai/
 1. Access the dashboard at http://localhost:8501
 2. Use the sidebar filters to analyze specific case types
 3. View real-time metrics and insights
-4. Export reports as needed
+4. Use the AI Assistant tab for interactive case analysis
+5. Export reports as needed
+
+### AI Assistant Features
+
+The integrated AI chatbot provides:
+- Real-time case analysis
+- Performance metrics interpretation
+- Trend identification
+- Actionable recommendations
+- Natural language interactions
 
 ### Dashboard Preview
 
