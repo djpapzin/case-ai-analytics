@@ -25,11 +25,6 @@ env/
 *.json
 *.h5
 
-# Images
-*.png
-*.jpg
-*.jpeg
-
 # Logs
 logs/
 *.log
