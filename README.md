@@ -34,20 +34,24 @@ An AI-powered legal case management system that helps law firms and legal depart
 
 ### API Key Setup
 
-1. **Google Gemini API (Recommended - Free)**
-   - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
-   - Create a new API key
-   - Copy the key to your `.env` file as `GEMINI_API_KEY`
-   - Uses the latest `gemini-2.0-flash` model for enhanced performance
-
-2. **OpenAI API (Optional - Paid)**
+1. **OpenAI API (Primary - Paid)**
    - Visit [OpenAI API Keys](https://platform.openai.com/settings/organization/api-keys)
    - Create a new API key
    - Copy the key to your `.env` file as `OPENAI_API_KEY`
 
+2. **Google Gemini API (Fallback - Free)**
+   - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Create a new API key
+   - Copy the key to your `.env` file as `GEMINI_API_KEY`
+   - Uses the latest `gemini-2.0-flash` model
+   - Automatically used if OpenAI key is not configured or fails
+
 3. **Environment Setup**
    - Copy `.env.example` to `.env`
-   - Add your API key(s) to the `.env` file
+   - Add at least one API key (OpenAI or Gemini)
+   - The system will automatically use available keys based on the following priority:
+     1. OpenAI if configured
+     2. Gemini as fallback
 
 ### Installation
 
