@@ -1,5 +1,8 @@
 # Project Understanding & Progress
 
+## Live Demo
+🔗 [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
+
 ## Project Overview
 This project implements a machine learning solution for case management, consisting of three main components:
 1. A predictive model for case outcomes
