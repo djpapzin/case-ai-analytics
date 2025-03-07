@@ -1,8 +1,15 @@
 # TO DO List
 
+## In Progress 🚧
+- Streamlit Deployment
+  - [ ] Implement chat interface using Streamlit chat feature
+  - [ ] Test deployment
+  - [ ] Optimize performance
+  - [ ] Add error handling
+
 ## Frontend Tasks
-- Use Streamlit chat feature/library
-- Integrate a front end using React
+- [x] Use Streamlit chat feature/library
+- [ ] Integrate a front end using React (Future consideration)
 
 ## High Priority Tasks (1 week) 🚀
 ### AI Assistant Enhancement
@@ -51,8 +58,9 @@
 - [ ] Create backup procedures
 
 ## Notes 📝
-- Focus on AI assistant enhancements first
-- Prioritize security and performance
+- Currently focusing on Streamlit deployment
+- Next focus will be AI assistant enhancements
+- Prioritize security and performance after deployment
 - Regular testing throughout development
 - Document all new features and changes
 - Monitor API usage and performance
