@@ -4,6 +4,18 @@
 - Streamlit Deployment
   - [ ] Implement chat interface using Streamlit chat feature
   - [ ] Test deployment
+  - [ ] Configure deployment settings:
+    - [ ] Verify repository connection (djpapzin/case-ai-analytics)
+    - [ ] Confirm main file path (dashboard.py)
+    - [ ] Set up environment variables in Streamlit Cloud:
+      - [ ] GEMINI_API_KEY
+      - [ ] OPENAI_API_KEY (optional)
+    - [ ] Check Python dependencies in requirements.txt
+  - [ ] Deploy and verify:
+    - [ ] Test initial deployment
+    - [ ] Verify API connections
+    - [ ] Check chat functionality
+    - [ ] Test data loading
   - [ ] Optimize performance
   - [ ] Add error handling
 
