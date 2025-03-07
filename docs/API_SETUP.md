@@ -6,7 +6,10 @@ This document explains how to set up and run the Case AI Analytics API server on
 
 1. Conda environment (Miniconda or Anaconda)
 2. Required Python packages installed (see config/requirements.txt)
-3. Python 3.11 or higher
+3. Python 3.12 or higher
+4. API Keys for AI models:
+   - Google Gemini API key (recommended, free)
+   - OpenAI API key (optional, paid)
 
 ## Setup Instructions
 
@@ -26,7 +29,7 @@ This document explains how to set up and run the Case AI Analytics API server on
    .\scripts\run_api_server.ps1 -Debug
    ```
 
-   The server will start on port 5000 by default.
+   The server will start on port 8000 by default.
 
 ### Linux/macOS
 
@@ -40,7 +43,7 @@ This document explains how to set up and run the Case AI Analytics API server on
    ./scripts/run_server.sh
    ```
 
-   The server will start on port 5000 with nohup, so it continues running even if you close the terminal.
+   The server will start on port 8000 with nohup, so it continues running even if you close the terminal.
 
 ## Manual Setup (All Platforms)
 
@@ -54,19 +57,21 @@ If you prefer to run the server manually:
 2. Start the server:
    ```bash
    # Standard mode
-   python app.py --run-server --port 5000
+   python app.py --run-server --port 8000
 
    # Debug mode
-   python app.py --debug --run-server --port 5000
+   python app.py --debug --run-server --port 8000
    ```
 
 ## Environment Variables
 
 The following environment variables can be used to configure the server:
 
-- `PORT`: Server port (default: 5000)
+- `PORT`: Server port (default: 8000)
 - `DEBUG`: Enable debug mode (true/false)
 - `HOST`: Server host (default: 0.0.0.0)
+- `GEMINI_API_KEY`: Google Gemini API key
+- `OPENAI_API_KEY`: OpenAI API key
 
 ## Testing the API
 
@@ -74,24 +79,30 @@ Once the server is running, you can test it using:
 
 ```bash
 # Test root endpoint
-curl http://localhost:5000/
+curl http://localhost:8000/
 
 # Test prediction endpoint
-curl -X POST http://localhost:5000/predict \
+curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
   -d '{"case_type": "Family Law", "complexity": "Medium", "client_age": 35, "client_income_level": "Medium", "days_open": 30, "escalated": false}'
 
 # Test insights endpoint
-curl -X POST http://localhost:5000/insights \
-  -H "Content-Type: application/json" \
-  -d '{"insight_type": "common_case_types"}'
+curl http://localhost:8000/insights
+
+# Test metrics endpoint
+curl http://localhost:8000/metrics
+
+# Test cases endpoint
+curl http://localhost:8000/cases
 ```
 
 ## Available Endpoints
 
 - `GET /`: Root endpoint, returns a welcome message and API status
 - `POST /predict`: Predicts case resolution
-- `POST /insights`: Provides insights on case data
+- `GET /insights`: Provides insights on case data
+- `GET /metrics`: Returns current system metrics
+- `GET /cases`: Returns case data
 - `GET /model-info`: Returns information about the trained model
 
 For detailed request/response formats, see the API documentation in the README.md file.
@@ -113,6 +124,8 @@ Common error types:
 - Model loading errors
 - Invalid input format
 - Missing required fields
+- AI model initialization errors
+- API key configuration errors
 
 ## Logging
 
@@ -120,6 +133,7 @@ Logs are stored in the following files:
 - `logs/server.log`: Server operations
 - `logs/model.log`: Model predictions
 - `logs/api.log`: API requests/responses
+- `logs/chatbot.log`: AI assistant interactions
 
 Enable debug logging by starting the server in debug mode:
 ```bash
@@ -133,10 +147,10 @@ If the server fails to start:
 1. Check port availability:
    ```bash
    # Windows
-   netstat -ano | findstr :5000
+   netstat -ano | findstr :8000
    
    # Linux/macOS
-   lsof -i :5000
+   lsof -i :8000
    ```
 
 2. Verify conda environment:
@@ -144,10 +158,18 @@ If the server fails to start:
    conda list
    ```
 
-3. Common issues:
+3. Check API key configuration:
+   ```bash
+   # Verify .env file exists and contains API keys
+   cat .env
+   ```
+
+4. Common issues:
    - Port already in use
    - Missing dependencies
    - Invalid feature names in prediction requests
    - Incorrect data types in request payload
+   - Missing or invalid API keys
+   - AI model initialization failures
 
 For more detailed troubleshooting, check the logs or enable debug mode. 

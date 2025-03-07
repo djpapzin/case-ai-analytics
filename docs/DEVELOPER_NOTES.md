@@ -2,6 +2,41 @@
 
 ## Technical Implementation Details
 
+### AI Chatbot Implementation
+
+#### Architecture
+- Uses LangChain for chat functionality
+- Supports multiple LLM providers:
+  - Google Gemini (default, free)
+  - OpenAI (fallback, paid)
+- Maintains conversation history
+- Integrates with case data API
+
+#### Implementation Details
+```python
+# LLM Configuration
+model_config = {
+    'gemini': {
+        'model': 'gemini-2.0-flash',
+        'temperature': 0.7
+    },
+    'openai': {
+        'model': 'gpt-3.5-turbo',
+        'temperature': 0.7
+    }
+}
+
+# Conversation Memory
+memory = ConversationBufferMemory()
+
+# API Integration
+api_endpoints = {
+    'cases': '/cases',
+    'metrics': '/metrics',
+    'insights': '/insights'
+}
+```
+
 ### Feature Mapping Fix
 
 #### Issue
@@ -32,6 +67,7 @@ required_features = ['case_type', 'complexity', 'client_age', 'client_income_lev
 - Implemented structured logging for better debugging
 - Added request/response logging for API endpoints
 - Included model prediction details in logs
+- Added chatbot interaction logging
 
 #### Error Response Format
 ```python
@@ -53,26 +89,32 @@ required_features = ['case_type', 'complexity', 'client_age', 'client_income_lev
   - Feature validation
   - Response format validation
   - Error handling
+- `test_chatbot.py`: Tests AI assistant functionality
+  - Model initialization
+  - Conversation memory
+  - API integration
+  - Response generation
 
 #### Test Cases
 ```python
-test_cases = [
+chatbot_test_cases = [
     {
-        "case_type": "Family Law",
-        "complexity": "Medium",
-        "client_age": 35,
-        "client_income_level": "Medium",
-        "days_open": 30,
-        "escalated": False
+        "input": "Show me current case metrics",
+        "expected_api_calls": ["metrics"],
+        "validate_response": True
     },
-    # Additional test cases...
+    {
+        "input": "Analyze recent trends",
+        "expected_api_calls": ["cases", "insights"],
+        "validate_response": True
+    }
 ]
 ```
 
 ## Server Configuration
 
 ### Port Configuration
-- Default port: 5000
+- Default port: 8000
 - Configurable through command line arguments
 - Environment variable support: `PORT`
 
@@ -151,6 +193,12 @@ test_cases = [
 }
 ```
 
+### Chatbot Integration
+- **Memory Management**: Conversation history stored in memory
+- **Context Integration**: Real-time data fetching
+- **Error Handling**: Graceful fallback between models
+- **Response Generation**: Natural language processing
+
 ## Future Improvements
 
 ### Feature Engineering
@@ -167,6 +215,8 @@ test_cases = [
 1. Develop web interface for predictions
 2. Add visualization dashboard
 3. Implement user authentication
+4. Enhance chatbot UI/UX
+5. Add conversation export functionality
 
 ### Data Visualization
 1. Add case type distribution charts
@@ -177,6 +227,13 @@ test_cases = [
 1. Add SHAP value explanations
 2. Implement feature importance visualization
 3. Create case-specific explanation reports
+
+### AI Assistant Enhancements
+1. Add support for more LLM providers
+2. Implement caching for API responses
+3. Add custom prompt templates
+4. Enhance conversation memory management
+5. Implement rate limiting and usage tracking
 
 ## Troubleshooting Guide
 
@@ -197,6 +254,12 @@ test_cases = [
    - Verify server status
    - Check firewall settings
 
+4. **AI Model Issues**
+   - Check API key configuration
+   - Verify model availability
+   - Monitor rate limits
+   - Check for model-specific errors
+
 ### Debug Mode
 Enable debug mode for detailed logging:
 ```bash
@@ -206,4 +269,5 @@ python app.py --debug
 ### Log Files
 - Server logs: `logs/server.log`
 - Model logs: `logs/model.log`
-- API logs: `logs/api.log` 
+- API logs: `logs/api.log`
+- Chatbot logs: `logs/chatbot.log` 
