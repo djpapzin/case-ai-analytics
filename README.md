@@ -91,6 +91,12 @@ case-management-ai/
 3. View real-time metrics and insights
 4. Export reports as needed
 
+### Dashboard Preview
+
+![Case Management Dashboard](docs/images/demo.jpeg)
+
+*The dashboard provides real-time metrics, key insights, and interactive visualizations for case management.*
+
 ## Development
 
 ### Running Tests
