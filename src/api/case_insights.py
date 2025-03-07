@@ -272,6 +272,40 @@ class CaseInsights:
         else:
             return "I couldn't understand that question. Try asking about common case types, resolution factors, assignee performance, or escalation patterns."
 
+    def analyze_data(self):
+        """Analyze the case data and return insights"""
+        total_cases = len(self.data)
+        open_cases = len(self.data[self.data['status'] == 'Open'])
+        escalated_cases = len(self.data[self.data['escalated'] == True])
+        
+        # Calculate case type distribution
+        case_type_counts = self.data['case_type'].value_counts()
+        most_common_type = case_type_counts.index[0]
+        type_percentage = (case_type_counts[most_common_type] / total_cases) * 100
+        
+        # Calculate assignee workload
+        assignee_counts = self.data['assignee'].value_counts()
+        busiest_assignee = assignee_counts.index[0]
+        assignee_cases = assignee_counts[busiest_assignee]
+        
+        # Calculate escalation rate
+        escalation_rate = (escalated_cases / total_cases) * 100
+        
+        return {
+            "total_cases": total_cases,
+            "open_cases": open_cases,
+            "escalated_cases": escalated_cases,
+            "most_common_type": {
+                "type": most_common_type,
+                "percentage": type_percentage
+            },
+            "busiest_assignee": {
+                "name": busiest_assignee,
+                "cases": assignee_cases
+            },
+            "escalation_rate": escalation_rate
+        }
+
 if __name__ == "__main__":
     # Test insights
     from data_generator import generate_synthetic_data

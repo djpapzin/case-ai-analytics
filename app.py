@@ -26,14 +26,14 @@ def main():
     parser.add_argument('--train-model', action='store_true', help='Train the prediction model')
     parser.add_argument('--run-server', action='store_true', help='Run the API server')
     parser.add_argument('--run-analysis', action='store_true', help='Run analysis and generate insights')
-    parser.add_argument('--port', type=int, default=5000, help='Port for the API server (default: 5000)')
+    parser.add_argument('--port', type=int, default=8000, help='Port for the API server (default: 8000)')
     
     args = parser.parse_args()
     
     # If no arguments are provided, run the server by default
     if not any(vars(args).values()):
-        print("No arguments provided, running API server on port 5000...")
-        run_server(5000)
+        print("No arguments provided, running API server on port 8000...")
+        run_server(8000)
         return
     
     if args.generate_data:
@@ -87,7 +87,7 @@ def main():
             print("Error: Data not found. Run with --generate-data first.")
             sys.exit(1)
 
-def run_server(port=5000):
+def run_server(port=8000):
     """Run the API server"""
     print(f"Starting API server on port {port}...")
     uvicorn.run("src.api.api:app", host="0.0.0.0", port=port)
