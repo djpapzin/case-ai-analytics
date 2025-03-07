@@ -1,0 +1,2 @@
+- Use Streamlit chat feature/library
+- intergrate a front end using react
