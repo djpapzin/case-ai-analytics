@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import plotly.express as px
 import random
 import numpy as np
+from src.agent.case_chatbot import CaseChatbot
 
 # Set page config
 st.set_page_config(
@@ -15,6 +16,13 @@ st.set_page_config(
 
 # API configuration
 API_URL = "http://localhost:8000"
+
+# Initialize session state for chat history
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
+
+if 'chatbot' not in st.session_state:
+    st.session_state.chatbot = CaseChatbot(API_URL)
 
 # Mock data generation for when API is unavailable
 def generate_mock_data(num_cases=100):
@@ -155,95 +163,137 @@ def main():
     st.title("Case Management Dashboard")
     st.markdown("### AI-Powered Legal Case Management System")
     
-    # Sidebar filters
-    st.sidebar.header("Filters")
+    # Create tabs for dashboard and chat interface
+    tab1, tab2 = st.tabs(["📊 Dashboard", "💬 AI Assistant"])
     
-    # Fetch data
-    cases_df = fetch_cases()
-    
-    if cases_df is not None:
-        # Case type filter
-        case_types = ["All"] + list(cases_df["case_type"].unique())
-        selected_type = st.sidebar.selectbox("Case Type", case_types)
+    with tab1:
+        # Sidebar filters
+        st.sidebar.header("Filters")
         
-        # Status filter
-        statuses = ["All"] + list(cases_df["status"].unique())
-        selected_status = st.sidebar.selectbox("Status", statuses)
+        # Fetch data
+        cases_df = fetch_cases()
         
-        # Date range filter
-        min_date = pd.to_datetime(cases_df["open_date"]).min().date()
-        max_date = pd.to_datetime(cases_df["open_date"]).max().date()
-        date_range = st.sidebar.date_input(
-            "Date Range",
-            value=(min_date, max_date),
-            min_value=min_date,
-            max_value=max_date
-        )
-        
-        # Apply filters
-        filtered_df = cases_df.copy()
-        if selected_type != "All":
-            filtered_df = filtered_df[filtered_df["case_type"] == selected_type]
-        if selected_status != "All":
-            filtered_df = filtered_df[filtered_df["status"] == selected_status]
-        if len(date_range) == 2:
-            start_date, end_date = date_range
+        if cases_df is not None:
+            # Case type filter
+            case_types = ["All"] + list(cases_df["case_type"].unique())
+            selected_type = st.sidebar.selectbox("Case Type", case_types)
+            
+            # Status filter
+            statuses = ["All"] + list(cases_df["status"].unique())
+            selected_status = st.sidebar.selectbox("Status", statuses)
+            
+            # Date range filter
+            min_date = pd.to_datetime(cases_df["open_date"]).min().date()
+            max_date = pd.to_datetime(cases_df["open_date"]).max().date()
+            date_range = st.sidebar.date_input(
+                "Date Range",
+                value=(min_date, max_date),
+                min_value=min_date,
+                max_value=max_date
+            )
+            
+            # Apply filters
+            filtered_df = cases_df.copy()
+            if selected_type != "All":
+                filtered_df = filtered_df[filtered_df["case_type"] == selected_type]
+            if selected_status != "All":
+                filtered_df = filtered_df[filtered_df["status"] == selected_status]
+            if len(date_range) == 2:
+                start_date, end_date = date_range
+                filtered_df["open_date"] = pd.to_datetime(filtered_df["open_date"])
+                filtered_df = filtered_df[
+                    (filtered_df["open_date"].dt.date >= start_date) &
+                    (filtered_df["open_date"].dt.date <= end_date)
+                ]
+            
+            # Display metrics
+            metrics = fetch_metrics()
+            if metrics:
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.metric("Total Cases", metrics["total_cases"])
+                with col2:
+                    st.metric("Active Cases", metrics["active_cases"])
+                with col3:
+                    st.metric("Resolved Cases", metrics["resolved_cases"])
+                with col4:
+                    st.metric("Escalation Rate", f"{metrics['escalation_rate']:.1%}")
+            
+            # Display insights
+            insights = fetch_insights()
+            if insights:
+                st.header("Key Insights")
+                for insight in insights["insights"]:
+                    st.info(insight)
+            
+            # Display case distribution
+            st.header("Case Distribution")
+            fig = px.pie(filtered_df, names="case_type", title="Cases by Type")
+            st.plotly_chart(fig)
+            
+            # Display case timeline
+            st.header("Case Timeline")
             filtered_df["open_date"] = pd.to_datetime(filtered_df["open_date"])
-            filtered_df = filtered_df[
-                (filtered_df["open_date"].dt.date >= start_date) &
-                (filtered_df["open_date"].dt.date <= end_date)
-            ]
+            filtered_df["close_date"] = pd.to_datetime(filtered_df["close_date"], errors='coerce')
+            timeline_df = filtered_df.groupby(pd.Grouper(key="open_date", freq="ME")).size().reset_index(name="count")
+            fig = px.line(timeline_df, x="open_date", y="count", title="Cases Over Time")
+            st.plotly_chart(fig)
+            
+            # Display cases table
+            st.header("Cases")
+            st.dataframe(filtered_df)
+            
+            # Export functionality
+            st.download_button(
+                label="Export Data",
+                data=filtered_df.to_csv(index=False),
+                file_name="case_data.csv",
+                mime="text/csv"
+            )
+        else:
+            st.error("Unable to load case data. Please check the API connection.")
+    
+    with tab2:
+        st.header("AI Case Assistant")
+        st.markdown("""
+        Ask me anything about the cases! I can help you with:
+        - Case trends and patterns
+        - Performance metrics
+        - Risk analysis
+        - Recommendations
+        """)
         
-        # Display metrics
-        metrics = fetch_metrics()
-        if metrics:
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                st.metric("Total Cases", metrics["total_cases"])
-            with col2:
-                st.metric("Active Cases", metrics["active_cases"])
-            with col3:
-                st.metric("Resolved Cases", metrics["resolved_cases"])
-            with col4:
-                st.metric("Escalation Rate", f"{metrics['escalation_rate']:.1%}")
+        # Chat interface
+        user_input = st.chat_input("Ask a question about your cases...")
         
-        # Display insights
-        insights = fetch_insights()
-        if insights:
-            st.header("Key Insights")
-            for insight in insights["insights"]:
-                st.info(insight)
+        # Display chat history
+        for message in st.session_state.chat_history:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
         
-        # Display case distribution
-        st.header("Case Distribution")
-        fig = px.pie(filtered_df, names="case_type", title="Cases by Type")
-        st.plotly_chart(fig)
+        # Handle user input
+        if user_input:
+            # Display user message
+            with st.chat_message("user"):
+                st.markdown(user_input)
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
+            
+            # Get and display assistant response
+            with st.chat_message("assistant"):
+                with st.spinner("Thinking..."):
+                    response = st.session_state.chatbot.get_response(user_input)
+                    st.markdown(response)
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
         
-        # Display case timeline
-        st.header("Case Timeline")
-        filtered_df["open_date"] = pd.to_datetime(filtered_df["open_date"])
-        filtered_df["close_date"] = pd.to_datetime(filtered_df["close_date"], errors='coerce')
-        timeline_df = filtered_df.groupby(pd.Grouper(key="open_date", freq="ME")).size().reset_index(name="count")
-        fig = px.line(timeline_df, x="open_date", y="count", title="Cases Over Time")
-        st.plotly_chart(fig)
-        
-        # Display cases table
-        st.header("Cases")
-        st.dataframe(filtered_df)
-        
-        # Export functionality
-        st.download_button(
-            label="Export Data",
-            data=filtered_df.to_csv(index=False),
-            file_name="case_data.csv",
-            mime="text/csv"
-        )
-    else:
-        st.error("Unable to load case data. Please check the API connection.")
+        # Add a button to clear chat history
+        if st.button("Clear Chat History"):
+            st.session_state.chat_history = []
+            st.session_state.chatbot.reset_conversation()
+            st.rerun()
     
     # Footer
     st.markdown("---")
-    st.markdown("*Powered by AI Automation*")
+    st.markdown("*Powered by DJ Papzin*")
 
 if __name__ == "__main__":
     main() 
