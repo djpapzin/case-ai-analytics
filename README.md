@@ -30,6 +30,24 @@ An AI-powered legal case management system that helps law firms and legal depart
 ### Prerequisites
 - Python 3.12+
 - pip (Python package manager)
+- Google Gemini API key (free) or OpenAI API key (paid)
+
+### API Key Setup
+
+1. **Google Gemini API (Recommended - Free)**
+   - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Create a new API key
+   - Copy the key to your `.env` file as `GEMINI_API_KEY`
+   - Uses the latest `gemini-2.0-flash` model for enhanced performance
+
+2. **OpenAI API (Optional - Paid)**
+   - Visit [OpenAI API Keys](https://platform.openai.com/settings/organization/api-keys)
+   - Create a new API key
+   - Copy the key to your `.env` file as `OPENAI_API_KEY`
+
+3. **Environment Setup**
+   - Copy `.env.example` to `.env`
+   - Add your API key(s) to the `.env` file
 
 ### Installation
 
