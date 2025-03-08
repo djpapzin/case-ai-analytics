@@ -106,6 +106,17 @@ def generate_mock_insights(df):
     
     return {"insights": insights}
 
+def fetch_data(endpoint: str, fallback_data: dict = None) -> dict:
+    """Fetch data from API with graceful fallback to mock data."""
+    try:
+        response = requests.get(f"{API_URL}/{endpoint}", timeout=5)
+        if response.status_code == 200:
+            return response.json()
+        raise Exception(f"API returned status code {response.status_code}")
+    except Exception as e:
+        st.warning(f"Using mock data for {endpoint} (API connection unavailable)")
+        return fallback_data or generate_mock_data(endpoint)
+
 def fetch_cases():
     """Fetch cases from the API or use mock data"""
     try:

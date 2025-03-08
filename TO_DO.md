@@ -1,5 +1,13 @@
 # TO DO List
 
+## Critical Issues 🚨
+- Fix API Connection in Deployment
+  - [ ] Update API connection handling:
+    - [ ] Add fallback to mock data when API is unavailable
+    - [ ] Improve error messages for users
+    - [ ] Consider deploying backend API separately
+    - [ ] Update frontend to use deployed API URL
+
 ## In Progress 🚧
 - Streamlit Deployment
   - [x] Implement chat interface using Streamlit chat feature

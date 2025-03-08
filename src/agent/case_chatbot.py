@@ -1,5 +1,8 @@
-from langchain_openai import ChatOpenAI
+from typing import Optional
+from langchain_core.runnables import RunnableWithMessageHistory
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
@@ -12,72 +15,42 @@ import requests
 load_dotenv()
 
 class CaseChatbot:
-    def __init__(self, api_url="http://localhost:8000"):
-        """Initialize the chatbot with API connection and LangChain components."""
-        self.api_url = api_url
-        
-        # Initialize chat model (Gemini by default, fallback to OpenAI)
-        self.chat = self._initialize_chat_model()
-        
-        # Create conversation memory
-        self.memory = ConversationBufferMemory()
-        
-        # Define the conversation prompt
-        self.prompt = PromptTemplate(
-            input_variables=["history", "input"],
-            template="""You are an AI assistant for a legal case management system. You have access to case data and insights.
-            You can help users understand case trends, analyze performance metrics, and provide recommendations.
+    def __init__(self):
+        self.messages = []
+        self._initialize_chat_model()
 
-            Previous conversation:
-            {history}
-
-            Human: {input}
-            AI Assistant:"""
-        )
-        
-        # Create the conversation chain
-        self.conversation = ConversationChain(
-            llm=self.chat,
-            memory=self.memory,
-            prompt=self.prompt,
-            verbose=True
-        )
-    
-    def _initialize_chat_model(self):
-        """Initialize the chat model with OpenAI first, then fall back to Gemini (free)."""
-        openai_key = os.getenv("OPENAI_API_KEY")
-        gemini_key = os.getenv("GEMINI_API_KEY")
-        
-        if openai_key:
-            try:
-                return ChatOpenAI(
-                    model_name="gpt-3.5-turbo",
-                    temperature=0.7,
-                )
-            except Exception as e:
-                print(f"Error initializing OpenAI: {str(e)}")
-                print("Falling back to Gemini...")
-        
-        if gemini_key:
-            try:
-                return ChatGoogleGenerativeAI(
+    def _initialize_chat_model(self) -> None:
+        """Initialize the chat model with fallback strategy."""
+        try:
+            # Try Gemini first (free)
+            gemini_key = os.getenv("GEMINI_API_KEY")
+            if gemini_key:
+                self.chat_model = ChatGoogleGenerativeAI(
                     model="gemini-2.0-flash",
                     google_api_key=gemini_key,
                     temperature=0.7,
                 )
-            except Exception as e:
-                print(f"Error initializing Gemini: {str(e)}")
-                if openai_key:
-                    raise Exception("Both OpenAI and Gemini failed to initialize. Please check your API keys.")
-                else:
-                    raise Exception("Gemini failed to initialize. Please check your API key.")
-        
-        raise Exception("No API keys found. Please configure either OpenAI (paid) or Gemini (free) API key.")
-    
+                print("Using Gemini model")
+                return
+        except Exception as e:
+            print(f"Failed to initialize Gemini: {e}")
+
+        try:
+            # Fallback to OpenAI if available
+            openai_key = os.getenv("OPENAI_API_KEY")
+            if openai_key:
+                self.chat_model = ChatOpenAI(temperature=0.7)
+                print("Using OpenAI model")
+                return
+        except Exception as e:
+            print(f"Failed to initialize OpenAI: {e}")
+
+        raise ValueError("No valid API keys found for either Gemini or OpenAI")
+
     def _fetch_case_data(self):
         """Fetch case data from the API."""
         try:
-            response = requests.get(f"{self.api_url}/cases")
+            response = requests.get(f"http://localhost:8000/cases")
             if response.status_code == 200:
                 return pd.DataFrame(response.json())
             return None
@@ -88,7 +61,7 @@ class CaseChatbot:
     def _fetch_metrics(self):
         """Fetch metrics from the API."""
         try:
-            response = requests.get(f"{self.api_url}/metrics")
+            response = requests.get(f"http://localhost:8000/metrics")
             if response.status_code == 200:
                 return response.json()
             return None
@@ -99,7 +72,7 @@ class CaseChatbot:
     def _fetch_insights(self):
         """Fetch insights from the API."""
         try:
-            response = requests.get(f"{self.api_url}/insights")
+            response = requests.get(f"http://localhost:8000/insights")
             if response.status_code == 200:
                 return response.json()
             return None
@@ -108,6 +81,37 @@ class CaseChatbot:
             return None
     
     def get_response(self, user_input: str) -> str:
+        """Get response from the chat model using the new LangChain patterns."""
+        try:
+            # Add user message to history
+            self.messages.append(HumanMessage(content=user_input))
+            
+            # Create chain with message history
+            chain = RunnableWithMessageHistory(
+                self.chat_model,
+                message_history=self.messages,
+                input_messages_key="input",
+                history_messages_key="history"
+            )
+
+            # Get response
+            response = chain.invoke({"input": user_input})
+            
+            # Add AI response to history
+            self.messages.append(AIMessage(content=str(response)))
+            
+            return str(response)
+
+        except Exception as e:
+            error_msg = f"Error getting response: {str(e)}"
+            print(error_msg)
+            return "I apologize, but I encountered an error. Please try again or contact support if the issue persists."
+
+    def clear_history(self) -> None:
+        """Clear conversation history."""
+        self.messages = []
+
+    def get_response_with_context(self, user_input: str) -> str:
         """Get a response from the chatbot based on user input."""
         # Fetch latest data
         cases_df = self._fetch_case_data()
@@ -133,9 +137,5 @@ class CaseChatbot:
         full_input = f"{context}\n\nUser Question: {user_input}"
         
         # Get response from the conversation chain
-        response = self.conversation.predict(input=full_input)
-        return response
-    
-    def reset_conversation(self):
-        """Reset the conversation history."""
-        self.memory.clear() 
+        response = self.get_response(full_input)
+        return response 
