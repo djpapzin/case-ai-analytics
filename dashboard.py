@@ -6,6 +6,11 @@ import plotly.express as px
 import random
 import numpy as np
 from src.agent.case_chatbot import CaseChatbot
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Set page config
 st.set_page_config(
@@ -13,6 +18,10 @@ st.set_page_config(
     page_icon="📊",
     layout="wide"
 )
+
+# Check for required environment variables
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # API configuration
 API_URL = "https://ai-automation-geyi53q75-djpapzins-projects.vercel.app"  # Production API URL
@@ -266,6 +275,17 @@ def main():
     
     with tab2:
         st.header("AI Case Assistant")
+        
+        # Check for API keys and display warning if missing
+        if not GEMINI_API_KEY and not OPENAI_API_KEY:
+            st.warning("""
+            ⚠️ No API keys found. The chat functionality requires either:
+            - A Gemini API key (recommended, free)
+            - An OpenAI API key
+            
+            Please set the GEMINI_API_KEY or OPENAI_API_KEY environment variable in your Streamlit deployment settings.
+            """)
+        
         st.markdown("""
         Ask me anything about the cases! I can help you with:
         - Case trends and patterns
@@ -292,9 +312,14 @@ def main():
             # Get and display assistant response
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
-                    response = st.session_state.chatbot.get_response(user_input)
-                    st.markdown(response)
-            st.session_state.chat_history.append({"role": "assistant", "content": response})
+                    try:
+                        response = st.session_state.chatbot.get_response(user_input)
+                        st.markdown(response)
+                        st.session_state.chat_history.append({"role": "assistant", "content": response})
+                    except Exception as e:
+                        error_msg = "An error occurred while processing your request. Please make sure your API keys are correctly set."
+                        st.error(error_msg)
+                        st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
         
         # Add a button to clear chat history
         if st.button("Clear Chat History"):
