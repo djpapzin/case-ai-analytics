@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # API configuration
-API_URL = "https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app"  # Production API URL
+API_URL = "https://ai-automation-geyi53q75-djpapzins-projects.vercel.app"  # Production API URL
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
