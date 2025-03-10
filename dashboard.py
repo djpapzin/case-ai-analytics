@@ -14,8 +14,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# API configuration
-API_URL = "http://localhost:8000"
+# API Configuration
+# Set to None to use mock data, or set to your API URL
+# API_URL = None  # Use mock data
+# API_URL = "http://localhost:8000"  # Local development
+API_URL = "https://case-management-api.onrender.com"  # Render deployment
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
