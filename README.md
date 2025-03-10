@@ -2,6 +2,10 @@
 
 An AI-powered legal case management system that helps law firms and legal departments manage cases more efficiently through predictive analytics and automated insights.
 
+## Live Demo 🚀
+- **Dashboard**: [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
+- **API**: [Case Management API](https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app)
+
 ## Features
 
 - 🤖 AI-powered case outcome prediction
@@ -16,18 +20,34 @@ An AI-powered legal case management system that helps law firms and legal depart
 ## Architecture
 
 ### Backend
-- FastAPI for REST API
+- FastAPI for REST API (deployed on Vercel)
 - Random Forest model for predictions
 - SQLite database for data storage
 - Python-based data processing pipeline
 - LangChain for AI chat capabilities
 
 ### Frontend
-- Streamlit dashboard
+- Streamlit dashboard (deployed on Streamlit Cloud)
 - Interactive data visualization
 - Real-time updates
 - Responsive design
 - Integrated AI chatbot interface
+
+## Deployment
+
+### Backend API (Vercel)
+The FastAPI backend is deployed on Vercel for serverless operation:
+- Production API: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
+- Endpoints:
+  - `/cases` - Get case data
+  - `/metrics` - Get system metrics
+  - `/insights` - Get AI-powered insights
+
+### Frontend Dashboard (Streamlit)
+The Streamlit dashboard is deployed on Streamlit Cloud:
+- Live Dashboard: https://ai-powered-legal-case-management-system.streamlit.app/
+- Features real-time integration with the Vercel API
+- Includes AI chatbot interface
 
 ## Getting Started
 
@@ -35,6 +55,8 @@ An AI-powered legal case management system that helps law firms and legal depart
 - Python 3.12+
 - pip (Python package manager)
 - Google Gemini API key (free) or OpenAI API key (paid)
+- Vercel account (for API deployment)
+- Streamlit account (for dashboard deployment)
 
 ### API Key Setup
 

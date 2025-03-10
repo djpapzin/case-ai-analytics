@@ -172,4 +172,57 @@ If the server fails to start:
    - Missing or invalid API keys
    - AI model initialization failures
 
-For more detailed troubleshooting, check the logs or enable debug mode. 
+For more detailed troubleshooting, check the logs or enable debug mode.
+
+# API Setup and Deployment Guide
+
+## Production Deployment
+
+### Vercel Deployment
+The API is deployed on Vercel for production use:
+- **Production URL**: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
+- **GitHub Repository**: https://github.com/djpapzin/case-management-ai
+
+#### Deployment Configuration
+1. **vercel.json**:
+```json
+{
+    "builds": [
+        {
+            "src": "api/main.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "api/main.py"
+        }
+    ]
+}
+```
+
+2. **Optimized requirements.txt**:
+```
+fastapi>=0.100.0
+pydantic>=2.7.4
+uvicorn>=0.15.0
+requests>=2.31.0
+```
+
+#### Deployment Steps
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Login to Vercel:
+```bash
+vercel login
+```
+
+3. Deploy:
+```bash
+vercel
+vercel --prod  # for production deployment
+``` 

@@ -2,6 +2,10 @@
 
 ML-powered system for predicting case outcomes and extracting insights from case management data. Uses Random Forest for resolution prediction and provides analysis on case types, resolution factors, and assignee performance. Includes FastAPI server for API access and an AI-powered chatbot interface.
 
+## Live System
+- **Dashboard**: [Live Demo](https://ai-powered-legal-case-management-system.streamlit.app/)
+- **API**: [Production Endpoint](https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app)
+
 ## Project Overview
 
 This project consists of three main parts:
@@ -17,6 +21,54 @@ This project consists of three main parts:
 - **Case Insights**: AI agent that provides insights on case data (`case_insights.py`)
 - **API Server**: FastAPI implementation for model and insights access (`api.py`)
 - **AI Chatbot**: LangChain-based chatbot for interactive case analysis (`case_chatbot.py`)
+
+## Deployment
+
+### Backend API (Vercel)
+The FastAPI backend is deployed on Vercel for serverless operation:
+- **Production URL**: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
+- **Configuration**: Uses `vercel.json` for build and route settings
+- **Dependencies**: Optimized requirements.txt for Vercel's size limits
+- **Endpoints**:
+  - `GET /` - Welcome page and status check
+  - `GET /cases` - Retrieve case data
+  - `GET /metrics` - Get current system metrics
+  - `GET /insights` - Get AI-powered insights
+
+### Frontend Dashboard (Streamlit)
+The Streamlit dashboard is deployed on Streamlit Cloud:
+- **Live URL**: https://ai-powered-legal-case-management-system.streamlit.app/
+- **Features**:
+  - Real-time integration with Vercel API
+  - Interactive visualizations
+  - AI chatbot interface
+  - Case analytics and insights
+
+### Development Setup
+For local development:
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run API locally
+uvicorn api.main:app --reload
+
+# Run dashboard locally
+streamlit run dashboard.py
+```
+
+### Production Setup
+1. **Vercel Deployment**:
+   - Push code to GitHub
+   - Connect repository to Vercel
+   - Configure build settings via vercel.json
+   - Deploy using Vercel CLI or GitHub integration
+
+2. **Streamlit Deployment**:
+   - Push code to GitHub
+   - Connect repository to Streamlit Cloud
+   - Configure with requirements.txt
+   - Set environment variables for API keys
 
 ## Installation
 
