@@ -123,7 +123,7 @@ def fetch_data(endpoint: str, fallback_data: dict = None) -> dict:
             return response.json()
         raise Exception(f"API returned status code {response.status_code}")
     except Exception as e:
-        st.warning(f"Using mock data for {endpoint} (API connection unavailable)")
+        st.warning(f"Using mock data for {endpoint} (API connection unavailable: {str(e)})")
         return fallback_data or generate_mock_data(endpoint)
 
 def fetch_cases():
@@ -313,7 +313,7 @@ def main():
             with st.chat_message("assistant"):
                 with st.spinner("Thinking..."):
                     try:
-                        response = st.session_state.chatbot.get_response(user_input)
+                        response = st.session_state.chatbot.get_response_with_context(user_input)
                         st.markdown(response)
                         st.session_state.chat_history.append({"role": "assistant", "content": response})
                     except Exception as e:

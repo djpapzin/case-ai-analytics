@@ -23,34 +23,24 @@ class CaseChatbot:
 
     def _initialize_chat_model(self) -> None:
         """Initialize the chat model with fallback strategy."""
-        gemini_key = os.getenv("GEMINI_API_KEY")
-        openai_key = os.getenv("OPENAI_API_KEY")
-
-        if not gemini_key and not openai_key:
-            print("No API keys found. Chat functionality will be limited.")
-            return
-
         try:
-            # Try Gemini first (free)
-            if gemini_key:
-                self.chat_model = ChatGoogleGenerativeAI(
-                    model="gemini-2.0-flash",
-                    google_api_key=gemini_key,
-                    temperature=0.7,
-                )
-                print("Using Gemini model")
+            gemini_key = os.getenv("GEMINI_API_KEY")
+            if not gemini_key:
+                print("No Gemini API key found")
                 return
-        except Exception as e:
-            print(f"Failed to initialize Gemini: {e}")
 
-        try:
-            # Fallback to OpenAI if available
-            if openai_key:
-                self.chat_model = ChatOpenAI(temperature=0.7)
-                print("Using OpenAI model")
-                return
+            # Initialize Gemini with correct model name
+            self.chat_model = ChatGoogleGenerativeAI(
+                model="gemini-pro",  # Updated model name
+                google_api_key=gemini_key,
+                temperature=0.7,
+                convert_system_message_to_human=True
+            )
+            print("Successfully initialized Gemini model")
+            
         except Exception as e:
-            print(f"Failed to initialize OpenAI: {e}")
+            print(f"Error initializing chat model: {str(e)}")
+            self.chat_model = None
 
     def _fetch_case_data(self):
         """Fetch case data from the API."""
@@ -89,22 +79,14 @@ class CaseChatbot:
         """Get response from the chat model using the new LangChain patterns."""
         if not self.chat_model:
             return ("I apologize, but I'm currently unable to process your request. "
-                   "Please make sure either GEMINI_API_KEY or OPENAI_API_KEY is set in the environment variables.")
+                   "Please check that your GEMINI_API_KEY is correctly set in the environment variables.")
 
         try:
             # Add user message to history
             self.messages.append(HumanMessage(content=user_input))
             
-            # Create chain with message history
-            chain = RunnableWithMessageHistory(
-                self.chat_model,
-                message_history=self.messages,
-                input_messages_key="input",
-                history_messages_key="history"
-            )
-
-            # Get response
-            response = chain.invoke({"input": user_input})
+            # Create a simple response using the chat model directly
+            response = self.chat_model.invoke(user_input)
             
             # Add AI response to history
             self.messages.append(AIMessage(content=str(response)))
@@ -114,8 +96,8 @@ class CaseChatbot:
         except Exception as e:
             error_msg = f"Error getting response: {str(e)}"
             print(error_msg)
-            return ("I apologize, but I encountered an error. Please make sure your API keys are correctly set "
-                   "and try again, or contact support if the issue persists.")
+            return ("I apologize, but I encountered an error. Please verify that your Gemini API key is valid. "
+                   "Error details: " + str(e))
 
     def clear_history(self) -> None:
         """Clear conversation history."""
