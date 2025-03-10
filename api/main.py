@@ -10,7 +10,11 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with your Streamlit app's URL
+    allow_origins=[
+        "https://ai-powered-legal-case-management-system.streamlit.app",
+        "http://localhost:8501",
+        "*"  # For development
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
