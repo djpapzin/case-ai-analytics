@@ -121,7 +121,7 @@ def fetch_cases():
     """Fetch cases from the API or use mock data"""
     try:
         with st.spinner("Fetching case data..."):
-            response = requests.get(f"{API_URL}/cases", timeout=5)
+            response = requests.get(f"{API_URL}/api/cases", timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 df = pd.DataFrame(data)
@@ -142,7 +142,7 @@ def fetch_metrics():
     """Fetch metrics from the API or calculate from mock data"""
     try:
         with st.spinner("Fetching metrics..."):
-            response = requests.get(f"{API_URL}/metrics", timeout=5)
+            response = requests.get(f"{API_URL}/api/metrics", timeout=5)
             if response.status_code == 200:
                 return response.json()
             else:
@@ -158,7 +158,7 @@ def fetch_insights():
     """Fetch insights from the API or generate from mock data"""
     try:
         with st.spinner("Fetching insights..."):
-            response = requests.get(f"{API_URL}/insights", timeout=5)
+            response = requests.get(f"{API_URL}/api/insights", timeout=5)
             if response.status_code == 200:
                 return response.json()
             else:
