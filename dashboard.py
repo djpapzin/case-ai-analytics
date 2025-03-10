@@ -22,7 +22,11 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 if 'chatbot' not in st.session_state:
-    st.session_state.chatbot = CaseChatbot(API_URL)
+    try:
+        st.session_state.chatbot = CaseChatbot(api_url=API_URL)
+    except Exception as e:
+        st.error(f"Error initializing chatbot: {str(e)}")
+        st.session_state.chatbot = None
 
 # Mock data generation for when API is unavailable
 def generate_mock_data(num_cases=100):
