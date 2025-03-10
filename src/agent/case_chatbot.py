@@ -15,8 +15,9 @@ import requests
 load_dotenv()
 
 class CaseChatbot:
-    def __init__(self):
+    def __init__(self, api_url: str = "http://localhost:8000"):
         self.messages = []
+        self.api_url = api_url
         self._initialize_chat_model()
 
     def _initialize_chat_model(self) -> None:
@@ -50,7 +51,7 @@ class CaseChatbot:
     def _fetch_case_data(self):
         """Fetch case data from the API."""
         try:
-            response = requests.get(f"http://localhost:8000/cases")
+            response = requests.get(f"{self.api_url}/api/cases")
             if response.status_code == 200:
                 return pd.DataFrame(response.json())
             return None
@@ -61,7 +62,7 @@ class CaseChatbot:
     def _fetch_metrics(self):
         """Fetch metrics from the API."""
         try:
-            response = requests.get(f"http://localhost:8000/metrics")
+            response = requests.get(f"{self.api_url}/api/metrics")
             if response.status_code == 200:
                 return response.json()
             return None
@@ -72,7 +73,7 @@ class CaseChatbot:
     def _fetch_insights(self):
         """Fetch insights from the API."""
         try:
-            response = requests.get(f"http://localhost:8000/insights")
+            response = requests.get(f"{self.api_url}/api/insights")
             if response.status_code == 200:
                 return response.json()
             return None
