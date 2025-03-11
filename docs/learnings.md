@@ -328,3 +328,50 @@ The project now provides both powerful predictive capabilities and an intuitive 
    - Improve performance
    - Add security features
    - Optimize infrastructure
+
+### Deployment Challenges & Solutions
+- **Platform Migration**:
+  - Challenge: Vercel limitations with Python and long-running processes
+  - Solution: Migrated to Render.com for better Python support
+  - Result: Improved reliability and performance
+
+- **Cold Start Issues**:
+  - Challenge: Slow startup times with serverless
+  - Solution: Utilized Render.com's always-on instance
+  - Result: Consistent performance and better user experience
+
+- **Environment Management**:
+  - Challenge: Managing API keys across environments
+  - Solution: Implemented structured approach with:
+    - .env for local development
+    - .streamlit/secrets.toml for production
+    - Render.com environment variables
+  - Result: Secure and organized configuration management
+
+- **API Integration**:
+  - Challenge: Reliable communication between frontend and backend
+  - Solution: Implemented robust error handling and fallback strategies
+  - Result: More resilient system with better error recovery
+
+### Cloud Infrastructure Insights
+1. **Platform Selection**:
+   - Render.com provides better Python support than serverless alternatives
+   - Improved handling of long-running processes
+   - Better cold start performance
+   - More straightforward deployment process
+
+2. **Environment Management**:
+   - Structured approach to configuration
+   - Secure API key management
+   - Clear separation of development and production settings
+
+3. **Performance Optimization**:
+   - Always-on instances for critical services
+   - Optimized startup procedures
+   - Efficient resource utilization
+
+4. **Monitoring & Maintenance**:
+   - Comprehensive health checks
+   - Performance monitoring
+   - Error tracking and alerting
+   - Resource usage optimization

@@ -66,15 +66,18 @@ def generate_mock_data(num_cases: int = 100) -> List[Dict[str, Any]]:
     
     return cases
 
+@app.get("/")
 @app.get("/api")
 async def root():
     return {"message": "Welcome to the Case Management API"}
 
+@app.get("/cases")
 @app.get("/api/cases")
 async def get_cases():
     cases = generate_mock_data()
     return cases
 
+@app.get("/metrics")
 @app.get("/api/metrics")
 async def get_metrics():
     cases = generate_mock_data()
@@ -91,6 +94,7 @@ async def get_metrics():
         "escalation_rate": round(escalated_cases / total_cases, 2)
     }
 
+@app.get("/insights")
 @app.get("/api/insights")
 async def get_insights():
     cases = generate_mock_data()

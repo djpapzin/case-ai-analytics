@@ -1,189 +1,164 @@
 # Cloud Deployment Guide
 
-This document provides instructions for deploying the Case Management AI system to cloud platforms.
+This guide details the deployment process for the Case Management AI System using Render.com and Streamlit Cloud.
 
-## Current Deployment
+## Current Architecture
 
-The system is currently deployed to:
-- **Backend API**: [Render.com](https://case-management-ai.onrender.com/api)
-- **Frontend Dashboard**: [Streamlit Cloud](https://case-management-ai.streamlit.app/)
+### Backend (Render.com)
+- FastAPI application deployed on Render.com
+- Production URL: https://case-management-ai.onrender.com/api
+- Advantages over previous serverless setup:
+  - Better Python support
+  - Improved cold start times
+  - Reliable long-running process handling
+  - Automatic scaling
+  - Built-in health monitoring
 
-## Deployment Architecture
+### Frontend (Streamlit Cloud)
+- Streamlit dashboard deployed on Streamlit Cloud
+- Production URL: https://case-management-ai.streamlit.app/
+- Features:
+  - Real-time connection to Render.com API
+  - Interactive visualizations
+  - Integrated Gemini API chatbot
+  - Secure environment variable management
 
-![Deployment Architecture](https://mermaid.ink/img/pako:eNp1kU1PwzAMhv9KlBMgdT3QA4deEBJiB8QOcHATN_XWfMhxJqaq_51kLYxNiJzs1_bzOvZJVVYTVWrDPTk0gZ7RdQQfELyHBwfbDRqCJwKLPVmEDRwJWrKAHp0lCOQ9eXDYgcEGHQxkCQJ6h4E6-Aw9GWjJwRsE9I4CtBZbCOSxhxZNgJ4GGKAnD1_kYIcNDOixhY4G-KYBPmCLe_IwkMc9tGTxSAO8o8OWPJ7Jw4E8fKHBDgcYyGJHFr_Qk4WBHB7JwRYDvJGDIzk4UQ8HsniCgQJ8UoAjBXhBgwYDvKLBb_LwjBYDvKHBE1k8UYBXMtBTgANZOJLBb_LwQh5eyOErWRjI4xM5-CAPf1RpVeRZnhVFnhd5Vhb5vJwVZVmWs3JWlnlWzIu8yMrZPC_nZTYv8qLMy-JfQnlWFkU2z4vpVTbJq2xRZNPFYjGdTBfT6WKymM4W_wFKspTl?type=png)
+## Deployment Steps
 
-## Backend Deployment (Render.com)
+### Backend Deployment (Render.com)
 
-### Prerequisites
-- A Render.com account
-- Git repository with your code
+1. **Prerequisites**
+   - GitHub account with repository access
+   - Render.com account
+   - Google Gemini API key
+   - OpenAI API key (optional fallback)
 
-### Configuration Files
-The following files are required for Render.com deployment:
-
-1. **Procfile**
-   ```
-   web: cd api && uvicorn index:app --host 0.0.0.0 --port $PORT
-   ```
-
-2. **render.yaml**
-   ```yaml
-   services:
-     - type: web
-       name: case-management-ai
-       env: python
-       buildCommand: pip install -r requirements.txt
-       startCommand: cd api && uvicorn index:app --host 0.0.0.0 --port $PORT
-       envVars:
-         - key: PYTHON_VERSION
-           value: 3.10.0
-         - key: OPENAI_API_KEY
-           sync: false
-         - key: GEMINI_API_KEY
-           sync: false
-       autoDeploy: true
-       healthCheckPath: /api
-       plan: free
+2. **Render.com Setup**
+   ```bash
+   # Required files in repository
+   Procfile              # Process management
+   render.yaml           # Service configuration
+   runtime.txt          # Python version
+   requirements.txt     # Dependencies
    ```
 
-3. **runtime.txt**
-   ```
-   python-3.10.0
-   ```
-
-### Deployment Steps
-
-1. **Connect Repository**
+3. **Configuration Steps**
    - Log in to Render.com
-   - Go to Dashboard and click "New +"
-   - Select "Web Service"
-   - Connect your GitHub/GitLab repository
+   - Create new Web Service
+   - Connect GitHub repository
+   - Configure build settings:
+     - Name: case-management-api
+     - Environment: Python
+     - Build Command: `pip install -r requirements.txt`
+     - Start Command: `cd api && uvicorn index:app --host 0.0.0.0 --port $PORT`
 
-2. **Configure Service**
-   - Name: case-management-ai
-   - Environment: Python
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `cd api && uvicorn index:app --host 0.0.0.0 --port $PORT`
-
-3. **Set Environment Variables**
-   - PYTHON_VERSION: 3.10.0
-   - OPENAI_API_KEY: Your OpenAI API key (if using OpenAI)
-   - GEMINI_API_KEY: Your Gemini API key (if using Gemini)
-
-4. **Deploy**
-   - Click "Create Web Service"
-   - Wait for the build and deployment to complete
-
-5. **Verify Deployment**
-   - Visit the provided URL + "/api" to check if the API is running
-   - Example: https://case-management-ai.onrender.com/api
-
-## Frontend Deployment (Streamlit Cloud)
-
-### Prerequisites
-- A Streamlit Cloud account
-- Git repository with your code
-
-### Configuration Files
-
-1. **requirements.txt**
-   Ensure it includes all necessary packages:
+4. **Environment Variables**
    ```
-   streamlit
-   requests
-   pandas
-   plotly
+   GEMINI_API_KEY=your_gemini_api_key
+   OPENAI_API_KEY=your_openai_api_key (optional)
+   ENVIRONMENT=production
    ```
 
-2. **streamlit/config.toml**
+5. **Health Monitoring**
+   - Set up health check endpoint: `/api`
+   - Configure automatic restarts
+   - Enable error notifications
+
+### Frontend Deployment (Streamlit Cloud)
+
+1. **Prerequisites**
+   - GitHub account with repository access
+   - Streamlit Cloud account
+   - API keys for LLM services
+
+2. **Streamlit Configuration**
    ```toml
-   [theme]
-   primaryColor = "#1E88E5"
-   backgroundColor = "#FFFFFF"
-   secondaryBackgroundColor = "#F0F2F6"
-   textColor = "#262730"
-   font = "sans serif"
+   # .streamlit/secrets.toml
+   GEMINI_API_KEY = "your_gemini_api_key"
+   OPENAI_API_KEY = "your_openai_api_key"  # Optional
+   API_URL = "https://case-management-ai.onrender.com/api"
    ```
 
-### Deployment Steps
+3. **Deployment Steps**
+   - Log in to Streamlit Cloud
+   - Connect GitHub repository
+   - Set main file path: `dashboard.py`
+   - Configure secrets through Streamlit Cloud UI
+   - Deploy application
 
-1. **Connect Repository**
-   - Log in to Streamlit Cloud (https://share.streamlit.io/)
-   - Click "New app"
-   - Connect your GitHub/GitLab repository
-
-2. **Configure App**
-   - Main file path: `app/dashboard.py` (adjust to your actual path)
-   - Python version: 3.10
-   - Add any required secrets (API keys, etc.)
-
-3. **Advanced Settings**
-   - Set custom theme if needed
-   - Configure memory/CPU requirements
-
-4. **Deploy**
-   - Click "Deploy"
-   - Wait for the build and deployment to complete
-
-5. **Verify Deployment**
-   - Visit the provided URL to check if the dashboard is running
-   - Example: https://case-management-ai.streamlit.app/
-
-## Connecting Frontend to Backend
-
-The frontend dashboard needs to communicate with the backend API. This is configured in the dashboard code:
-
-```python
-# Example configuration in dashboard.py
-API_URL = "https://case-management-ai.onrender.com/api"
-```
-
-Ensure the API URL is correctly set in your dashboard code.
+4. **Environment Management**
+   - Local development: Use `.env` file
+   - Production: Use Streamlit secrets
+   - Never commit API keys to repository
 
 ## Monitoring and Maintenance
 
-### Render.com Monitoring
-- View logs in the Render.com dashboard
-- Set up alerts for service disruptions
-- Monitor resource usage
+### Backend (Render.com)
+- Monitor service health through Render dashboard
+- Check application logs for errors
+- Monitor cold start performance
+- Set up usage alerts
 
-### Streamlit Cloud Monitoring
-- View app metrics in the Streamlit Cloud dashboard
-- Check app logs for errors
-- Monitor app performance
+### Frontend (Streamlit)
+- Monitor application through Streamlit Cloud
+- Check error logs
+- Monitor user sessions
+- Track API response times
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **API Connection Errors**
-   - Check if the API is running
-   - Verify CORS settings in the API
-   - Check network connectivity
+1. **Cold Starts**
+   - Solution: Render.com always-on instance
+   - Monitor startup times
+   - Optimize initialization code
 
-2. **Deployment Failures**
-   - Check build logs for errors
-   - Verify dependencies in requirements.txt
-   - Check for syntax errors in code
+2. **API Timeouts**
+   - Check Render.com service logs
+   - Verify API endpoint health
+   - Monitor response times
 
-3. **Performance Issues**
-   - Monitor resource usage
-   - Optimize database queries
-   - Implement caching where appropriate
+3. **Environment Variables**
+   - Verify secrets in Streamlit Cloud
+   - Check Render.com environment variables
+   - Ensure API keys are valid
+
+4. **Deployment Failures**
+   - Check build logs
+   - Verify dependencies
+   - Test locally before deployment
+
+## Security Considerations
+
+1. **API Keys**
+   - Use environment variables
+   - Never commit secrets
+   - Rotate keys regularly
+
+2. **CORS Configuration**
+   - Configure allowed origins
+   - Implement rate limiting
+   - Set up request validation
+
+3. **Monitoring**
+   - Set up error alerting
+   - Monitor API usage
+   - Track performance metrics
 
 ## Future Improvements
 
-1. **Scaling**
-   - Upgrade to paid plans for better performance
-   - Implement database caching
-   - Use CDN for static assets
+1. **Performance**
+   - Implement caching
+   - Optimize cold starts
+   - Add CDN for static assets
 
-2. **Security**
-   - Add authentication to API
+2. **Reliability**
+   - Set up automated backups
+   - Implement blue-green deployment
+   - Add failover strategies
+
+3. **Security**
+   - Add authentication
    - Implement rate limiting
-   - Set up HTTPS with custom domain
-
-3. **CI/CD**
-   - Set up automated testing
-   - Implement blue-green deployments
-   - Add deployment notifications 
+   - Enhance monitoring 

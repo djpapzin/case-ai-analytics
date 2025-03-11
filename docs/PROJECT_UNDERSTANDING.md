@@ -80,17 +80,21 @@ This project implements a machine learning solution for case management, consist
 ### ✅ Cloud Deployment
 - **Backend Deployment (Render.com)**:
   - FastAPI application deployed to Render.com
+  - Migrated from Vercel to Render.com for better reliability and Python support
   - 24/7 availability with automatic scaling
   - Secure API endpoints with CORS support
   - Configuration files:
     - Procfile for command definition
     - render.yaml for service configuration
     - runtime.txt for Python version specification
+  - Improved cold start times compared to serverless solutions
+  - Better handling of long-running Python processes
 - **Frontend Deployment (Streamlit Cloud)**:
   - Dashboard deployed to Streamlit Cloud
   - Real-time connection to backend API
   - Interactive visualization and filtering
-  - Integrated AI chatbot interface
+  - Integrated AI chatbot interface with Gemini API
+  - Environment variable management through Streamlit secrets
 - **API Endpoints**:
   - GET /api - Welcome page and status check
   - GET /api/cases - Retrieve case data
@@ -147,7 +151,9 @@ This project implements a machine learning solution for case management, consist
 - Feature engineering significantly improved model performance
 - AI chatbot provides intuitive access to insights
 - Multiple LLM support ensures reliable operation
-- Cloud deployment provides 24/7 availability and scalability
+- Render.com provides better Python support than serverless alternatives
+- Streamlit Cloud integration simplifies frontend deployment
+- Environment management crucial for cloud deployments
 
 ## Challenges & Solutions
 1. **Data Processing**:
@@ -160,15 +166,23 @@ This project implements a machine learning solution for case management, consist
 
 3. **AI Integration**:
    - Challenge: LLM reliability and cost
-   - Solution: Multi-provider strategy with fallback
+   - Solution: Multi-provider strategy (Gemini as primary, OpenAI as fallback)
+   - Challenge: API key management across different environments
+   - Solution: Implemented .env for local development and Streamlit secrets for production
 
 4. **System Architecture**:
-   - Challenge: Real-time performance
-   - Solution: Efficient API design and caching
+   - Challenge: Real-time performance and cold starts
+   - Solution: Migrated from Vercel to Render.com for better Python support
+   - Challenge: Environment consistency
+   - Solution: Standardized configuration across local and cloud environments
 
 5. **Cloud Deployment**:
-   - Challenge: Ensuring consistent environment across platforms
-   - Solution: Standardized configuration files and dependency management
+   - Challenge: Vercel limitations with Python and long-running processes
+   - Solution: Migrated to Render.com for better Python support and reliability
+   - Challenge: Environment variable management across platforms
+   - Solution: Implemented structured secrets management with .env and .streamlit/secrets.toml
+   - Challenge: Cold start times affecting API response
+   - Solution: Utilized Render.com's always-on instance option
 
 ## Future Improvements
 1. **Data Enhancement**:
@@ -182,16 +196,19 @@ This project implements a machine learning solution for case management, consist
    - Add model versioning
 
 3. **AI Capabilities**:
-   - Add more specialized analysis
-   - Implement proactive alerts
-   - Enhance natural language processing
+   - Optimize Gemini API integration
+   - Implement response caching
+   - Add conversation context management
+   - Enhance error handling and fallback strategies
 
 4. **Infrastructure**:
-   - Scale for larger datasets
-   - Implement distributed processing
-   - Add monitoring and alerting
-   
+   - Implement Render.com health checks
+   - Add request rate limiting
+   - Set up monitoring and logging
+   - Implement automated backups
+
 5. **Cloud Optimization**:
+   - Fine-tune Render.com instance settings
    - Implement caching strategies
    - Add CDN for static assets
    - Set up automated backups

@@ -1,228 +1,244 @@
-# API Server Setup & Usage
+# API Setup Guide
 
-This document explains how to set up and run the Case AI Analytics API server on different platforms.
+This guide details the setup and configuration of the Case Management API system.
 
-## Prerequisites
+## Current Architecture
 
-1. Conda environment (Miniconda or Anaconda)
-2. Required Python packages installed (see config/requirements.txt)
-3. Python 3.12 or higher
-4. API Keys for AI models:
-   - Google Gemini API key (recommended, free)
-   - OpenAI API key (optional, paid)
+The API is built with FastAPI and deployed on Render.com, providing:
+- RESTful endpoints for case management
+- AI-powered chatbot integration
+- Real-time metrics and insights
+- Secure environment variable management
 
-## Setup Instructions
+## API Endpoints
 
-### Windows
-
-1. Activate the conda environment:
-   ```powershell
-   conda activate ai-automation
-   ```
-
-2. Run the provided PowerShell script:
-   ```powershell
-   # Standard mode
-   .\scripts\run_server.ps1
-
-   # Debug mode
-   .\scripts\run_api_server.ps1 -Debug
-   ```
-
-   The server will start on port 8000 by default.
-
-### Linux/macOS
-
-1. Make the shell script executable:
-   ```bash
-   chmod +x scripts/run_server.sh
-   ```
-
-2. Run the script:
-   ```bash
-   ./scripts/run_server.sh
-   ```
-
-   The server will start on port 8000 with nohup, so it continues running even if you close the terminal.
-
-## Manual Setup (All Platforms)
-
-If you prefer to run the server manually:
-
-1. Activate the conda environment:
-   ```bash
-   conda activate ai-automation
-   ```
-
-2. Start the server:
-   ```bash
-   # Standard mode
-   python app.py --run-server --port 8000
-
-   # Debug mode
-   python app.py --debug --run-server --port 8000
-   ```
-
-## Environment Variables
-
-The following environment variables can be used to configure the server:
-
-- `PORT`: Server port (default: 8000)
-- `DEBUG`: Enable debug mode (true/false)
-- `HOST`: Server host (default: 0.0.0.0)
-- `GEMINI_API_KEY`: Google Gemini API key
-- `OPENAI_API_KEY`: OpenAI API key
-
-## Testing the API
-
-Once the server is running, you can test it using:
-
-```bash
-# Test root endpoint
-curl http://localhost:8000/
-
-# Test prediction endpoint
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"case_type": "Family Law", "complexity": "Medium", "client_age": 35, "client_income_level": "Medium", "days_open": 30, "escalated": false}'
-
-# Test insights endpoint
-curl http://localhost:8000/insights
-
-# Test metrics endpoint
-curl http://localhost:8000/metrics
-
-# Test cases endpoint
-curl http://localhost:8000/cases
+### Base URL
+```
+https://case-management-ai.onrender.com/api
 ```
 
-## Available Endpoints
+### Available Endpoints
 
-- `GET /`: Root endpoint, returns a welcome message and API status
-- `POST /predict`: Predicts case resolution
-- `GET /insights`: Provides insights on case data
-- `GET /metrics`: Returns current system metrics
-- `GET /cases`: Returns case data
-- `GET /model-info`: Returns information about the trained model
+1. **Status Check**
+   ```
+   GET /api
+   Response: {"message": "Welcome to the Case Management API"}
+   ```
 
-For detailed request/response formats, see the API documentation in the README.md file.
+2. **Case Data**
+   ```
+   GET /api/cases
+   Response: Array of case objects
+   ```
 
-## Error Handling
+3. **System Metrics**
+   ```
+   GET /api/metrics
+   Response: Current system metrics
+   ```
 
-The API returns structured error responses in the following format:
+4. **AI Insights**
+   ```
+   GET /api/insights
+   Response: AI-generated insights
+   ```
 
-```json
-{
-    "error": "Error type",
-    "details": "Detailed error message",
-    "timestamp": "2024-03-14T12:00:00Z"
-}
+5. **Chat Interface**
+   ```
+   POST /api/chat
+   Body: {"message": "Your question here"}
+   Response: AI-generated response
+   ```
+
+## Local Development Setup
+
+1. **Prerequisites**
+   - Python 3.10+
+   - pip package manager
+   - Git
+
+2. **Environment Setup**
+   ```bash
+   # Clone repository
+   git clone https://github.com/your-username/case-management-ai.git
+   cd case-management-ai
+
+   # Create virtual environment
+   python -m venv venv
+   source venv/bin/activate  # Linux/Mac
+   .\venv\Scripts\activate   # Windows
+
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
+
+3. **Environment Variables**
+   ```bash
+   # Create .env file
+   touch .env
+
+   # Add required variables
+   GEMINI_API_KEY=your_gemini_api_key
+   OPENAI_API_KEY=your_openai_api_key  # Optional
+   ENVIRONMENT=development
+   ```
+
+4. **Run Development Server**
+   ```bash
+   cd api
+   uvicorn index:app --reload --port 8000
+   ```
+
+## Production Deployment (Render.com)
+
+1. **Prerequisites**
+   - Render.com account
+   - GitHub repository access
+   - API keys (Gemini/OpenAI)
+
+2. **Configuration Files**
+   ```bash
+   # Procfile
+   web: cd api && uvicorn index:app --host 0.0.0.0 --port $PORT
+
+   # render.yaml
+   services:
+     - type: web
+       name: case-management-api
+       env: python
+       buildCommand: pip install -r requirements.txt
+       startCommand: cd api && uvicorn index:app --host 0.0.0.0 --port $PORT
+       envVars:
+         - key: PYTHON_VERSION
+           value: 3.10.0
+         - key: GEMINI_API_KEY
+           sync: false
+         - key: OPENAI_API_KEY
+           sync: false
+       healthCheckPath: /api
+   ```
+
+3. **Deployment Steps**
+   - Connect repository to Render.com
+   - Configure environment variables
+   - Deploy service
+   - Monitor health checks
+
+## API Integration
+
+### Frontend Integration
+```python
+# Example API client setup
+import requests
+
+API_BASE_URL = "https://case-management-ai.onrender.com/api"
+
+def get_cases():
+    response = requests.get(f"{API_BASE_URL}/cases")
+    return response.json()
+
+def chat_with_ai(message):
+    response = requests.post(f"{API_BASE_URL}/chat", 
+                           json={"message": message})
+    return response.json()
 ```
 
-Common error types:
-- Feature validation errors
-- Model loading errors
-- Invalid input format
-- Missing required fields
-- AI model initialization errors
-- API key configuration errors
-
-## Logging
-
-Logs are stored in the following files:
-- `logs/server.log`: Server operations
-- `logs/model.log`: Model predictions
-- `logs/api.log`: API requests/responses
-- `logs/chatbot.log`: AI assistant interactions
-
-Enable debug logging by starting the server in debug mode:
-```bash
-python app.py --debug
+### Error Handling
+```python
+def api_request(endpoint, method="GET", data=None):
+    try:
+        url = f"{API_BASE_URL}/{endpoint}"
+        response = requests.request(method, url, json=data)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        print(f"API Error: {str(e)}")
+        return None
 ```
+
+## Security Considerations
+
+1. **API Keys**
+   - Store in environment variables
+   - Never commit to version control
+   - Rotate regularly
+   - Use secrets management in production
+
+2. **Rate Limiting**
+   - Implement per-client limits
+   - Monitor usage patterns
+   - Set up alerts for abuse
+
+3. **Error Handling**
+   - Sanitize error messages
+   - Log security events
+   - Implement retry logic
+
+## Monitoring
+
+1. **Health Checks**
+   - Regular endpoint monitoring
+   - Response time tracking
+   - Error rate monitoring
+
+2. **Logging**
+   - Request/response logging
+   - Error tracking
+   - Performance metrics
+
+3. **Alerts**
+   - Service disruptions
+   - High error rates
+   - Resource utilization
+
+## Testing
+
+1. **Local Testing**
+   ```bash
+   # Run tests
+   pytest tests/
+
+   # Test specific endpoint
+   curl http://localhost:8000/api
+   ```
+
+2. **Production Testing**
+   ```bash
+   # Test production endpoint
+   curl https://case-management-ai.onrender.com/api
+
+   # Test with authentication
+   curl -H "Authorization: Bearer $API_KEY" \
+        https://case-management-ai.onrender.com/api/cases
+   ```
 
 ## Troubleshooting
 
-If the server fails to start:
+1. **Common Issues**
+   - API key configuration
+   - CORS settings
+   - Rate limiting
+   - Connection timeouts
 
-1. Check port availability:
-   ```bash
-   # Windows
-   netstat -ano | findstr :8000
-   
-   # Linux/macOS
-   lsof -i :8000
-   ```
+2. **Debug Tools**
+   - FastAPI debug mode
+   - Request logging
+   - Error tracking
+   - Performance monitoring
 
-2. Verify conda environment:
-   ```bash
-   conda list
-   ```
+## Future Improvements
 
-3. Check API key configuration:
-   ```bash
-   # Verify .env file exists and contains API keys
-   cat .env
-   ```
+1. **Performance**
+   - Response caching
+   - Query optimization
+   - Connection pooling
 
-4. Common issues:
-   - Port already in use
-   - Missing dependencies
-   - Invalid feature names in prediction requests
-   - Incorrect data types in request payload
-   - Missing or invalid API keys
-   - AI model initialization failures
+2. **Security**
+   - OAuth implementation
+   - API key rotation
+   - Request validation
 
-For more detailed troubleshooting, check the logs or enable debug mode.
-
-# API Setup and Deployment Guide
-
-## Production Deployment
-
-### Vercel Deployment
-The API is deployed on Vercel for production use:
-- **Production URL**: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
-- **GitHub Repository**: https://github.com/djpapzin/case-management-ai
-
-#### Deployment Configuration
-1. **vercel.json**:
-```json
-{
-    "builds": [
-        {
-            "src": "api/main.py",
-            "use": "@vercel/python"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "api/main.py"
-        }
-    ]
-}
-```
-
-2. **Optimized requirements.txt**:
-```
-fastapi>=0.100.0
-pydantic>=2.7.4
-uvicorn>=0.15.0
-requests>=2.31.0
-```
-
-#### Deployment Steps
-1. Install Vercel CLI:
-```bash
-npm install -g vercel
-```
-
-2. Login to Vercel:
-```bash
-vercel login
-```
-
-3. Deploy:
-```bash
-vercel
-vercel --prod  # for production deployment
-``` 
+3. **Features**
+   - Batch operations
+   - Real-time updates
+   - Advanced analytics 

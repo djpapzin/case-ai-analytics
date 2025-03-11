@@ -3,8 +3,8 @@
 ML-powered system for predicting case outcomes and extracting insights from case management data. Uses Random Forest for resolution prediction and provides analysis on case types, resolution factors, and assignee performance. Includes FastAPI server for API access and an AI-powered chatbot interface.
 
 ## Live System
-- **Dashboard**: [Live Demo](https://ai-powered-legal-case-management-system.streamlit.app/)
-- **API**: [Production Endpoint](https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app)
+- **Dashboard**: [Live Demo](https://case-management-ai.streamlit.app/)
+- **API**: [Production Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Project Overview
 
@@ -39,24 +39,33 @@ This project consists of three main parts:
 
 ## Deployment
 
-### Backend API (Vercel)
-The FastAPI backend is deployed on Vercel for serverless operation:
-- **Production URL**: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
-- **Configuration**: Uses `vercel.json` for build and route settings
-- **Dependencies**: Optimized requirements.txt for Vercel's size limits
+### Backend API (Render.com)
+The FastAPI backend is deployed on Render.com for reliable operation:
+- **Production URL**: https://case-management-ai.onrender.com/api
+- **Configuration**: 
+  - Uses `Procfile` for process management
+  - `render.yaml` for service configuration
+  - `runtime.txt` for Python version
+- **Features**:
+  - Improved cold start times
+  - Better Python process handling
+  - Automatic scaling
+  - Health monitoring
 - **Endpoints**:
-  - `GET /` - Welcome page and status check
+  - `GET /api` - Welcome page and status check
   - `GET /cases` - Retrieve case data
   - `GET /metrics` - Get current system metrics
   - `GET /insights` - Get AI-powered insights
+  - `POST /chat` - Interact with AI chatbot
 
 ### Frontend Dashboard (Streamlit)
 The Streamlit dashboard is deployed on Streamlit Cloud:
-- **Live URL**: https://ai-powered-legal-case-management-system.streamlit.app/
+- **Live URL**: https://case-management-ai.streamlit.app/
 - **Features**:
-  - Real-time integration with Vercel API
+  - Real-time integration with Render.com API
   - Interactive visualizations
-  - AI chatbot interface
+  - AI chatbot interface with Gemini API
+  - Secure environment variable management
   - Case analytics and insights
 
 ### Development Setup
@@ -73,16 +82,18 @@ streamlit run dashboard.py
 ```
 
 ### Production Setup
-1. **Vercel Deployment**:
+1. **Render.com Deployment**:
    - Push code to GitHub
-   - Connect repository to Vercel
-   - Configure build settings via vercel.json
-   - Deploy using Vercel CLI or GitHub integration
+   - Connect repository to Render.com
+   - Configure build settings
+   - Set environment variables
+   - Deploy using GitHub integration
 
 2. **Streamlit Deployment**:
    - Push code to GitHub
    - Connect repository to Streamlit Cloud
    - Configure with requirements.txt
+   - Set up `.streamlit/secrets.toml`
    - Set environment variables for API keys
 
 ## Installation
@@ -142,9 +153,11 @@ The chatbot supports two language models:
 ### Backend Deployment (Render.com)
 
 The FastAPI backend is deployed on Render.com, providing:
-- 24/7 availability
+- 24/7 availability with improved reliability
 - Automatic scaling
-- Global access
+- Better Python support
+- Improved cold start times
+- Long-running process handling
 - Secure API endpoints
 
 Configuration files:
@@ -158,7 +171,8 @@ The Streamlit dashboard is deployed on Streamlit Cloud, providing:
 - Interactive web interface
 - Real-time data visualization
 - Secure access to the API
-- Integrated AI chatbot
+- Integrated AI chatbot with Gemini API
+- Environment variable management through secrets
 
 ## Testing
 

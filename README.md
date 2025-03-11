@@ -3,8 +3,8 @@
 An AI-powered legal case management system that helps law firms and legal departments manage cases more efficiently through predictive analytics and automated insights.
 
 ## Live Demo 🚀
-- **Dashboard**: [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
-- **API**: [Case Management API](https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app)
+- **Dashboard**: [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app)
+- **API**: [Case Management API](https://case-management-ai.onrender.com/api)
 
 ## Features
 
@@ -21,19 +21,21 @@ An AI-powered legal case management system that helps law firms and legal depart
 ## Architecture
 
 ### Backend
-- FastAPI for REST API (deployed on Vercel)
+- FastAPI for REST API
 - Random Forest model for predictions
 - SQLite database for data storage
 - Python-based data processing pipeline
 - LangChain for AI chat capabilities
-- Deployed on Render.com for 24/7 availability
+- Deployed on Render.com for reliable 24/7 availability
+- Improved cold start times and Python process handling
 
 ### Frontend
-- Streamlit dashboard (deployed on Streamlit Cloud)
+- Streamlit dashboard
 - Interactive data visualization
 - Real-time updates
 - Responsive design
-- Integrated AI chatbot interface
+- Integrated AI chatbot interface with Gemini API
+- Environment variable management through Streamlit secrets
 - Hosted on Streamlit Cloud
 
 ## Live Demo
@@ -47,34 +49,23 @@ The system is deployed using a modern cloud architecture:
 
 ### Backend (Render.com)
 - FastAPI application deployed on Render.com
+- Migrated from Vercel for better Python support and reliability
 - Automatic scaling based on demand
 - Continuous deployment from GitHub
 - Environment variables for API keys
 - Health checks and monitoring
+- Improved cold start times
+- Better handling of long-running Python processes
 
 ### Frontend (Streamlit Cloud)
 - Streamlit dashboard hosted on Streamlit Cloud
 - Automatic updates from GitHub repository
 - Custom domain configuration
 - Responsive design for all devices
+- Secure environment variable management
+- Integrated AI chatbot with Gemini API
 
 For detailed deployment instructions, see [Cloud Deployment Guide](docs/CLOUD_DEPLOYMENT.md).
-
-## Deployment
-
-### Backend API (Vercel)
-The FastAPI backend is deployed on Vercel for serverless operation:
-- Production API: https://ai-automation-q2fcum39s-djpapzins-projects.vercel.app
-- Endpoints:
-  - `/cases` - Get case data
-  - `/metrics` - Get system metrics
-  - `/insights` - Get AI-powered insights
-
-### Frontend Dashboard (Streamlit)
-The Streamlit dashboard is deployed on Streamlit Cloud:
-- Live Dashboard: https://ai-powered-legal-case-management-system.streamlit.app/
-- Features real-time integration with the Vercel API
-- Includes AI chatbot interface
 
 ## Getting Started
 
@@ -82,7 +73,7 @@ The Streamlit dashboard is deployed on Streamlit Cloud:
 - Python 3.10+
 - pip (Python package manager)
 - Google Gemini API key (free) or OpenAI API key (paid)
-- Vercel account (for API deployment)
+- Render.com account (for API deployment)
 - Streamlit account (for dashboard deployment)
 
 ### API Key Setup
@@ -91,7 +82,8 @@ The Streamlit dashboard is deployed on Streamlit Cloud:
    - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
    - Create a new API key
    - Copy the key to your `.env` file as `GEMINI_API_KEY`
-   - Uses the latest `gemini-2.0-flash` model
+   - For production, add to Streamlit secrets
+   - Uses the latest `gemini-pro` model
 
 2. **OpenAI API (Optional - Paid)**
    - Visit [OpenAI API Keys](https://platform.openai.com/settings/organization/api-keys)
@@ -99,7 +91,8 @@ The Streamlit dashboard is deployed on Streamlit Cloud:
    - Copy the key to your `.env` file as `OPENAI_API_KEY`
 
 3. **Environment Setup**
-   - Copy `.env.example` to `.env`
+   - Copy `.env.example` to `.env` for local development
+   - Create `.streamlit/secrets.toml` for production
    - Add at least one API key (Gemini recommended)
    - The system will automatically use available keys based on the following priority:
      1. Gemini (default - free)
@@ -152,9 +145,11 @@ The dashboard will be available at http://localhost:8501
    - Environment: Python
    - Build Command: `pip install -r requirements.txt`
    - Start Command: `cd api && uvicorn index:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables if using the chatbot:
+5. Add environment variables:
    - GEMINI_API_KEY: Your Google Gemini API key
    - OPENAI_API_KEY: Your OpenAI API key (optional)
+6. Deploy and monitor the service
+7. Note the provided URL for API access
 
 ### Frontend Deployment (Streamlit Cloud)
 
@@ -162,7 +157,9 @@ The dashboard will be available at http://localhost:8501
 2. Connect your GitHub repository
 3. Configure the app:
    - Main file path: `dashboard.py`
-   - Add the same environment variables as the backend if needed
+   - Create `.streamlit/secrets.toml` with required API keys
+4. Deploy and monitor the application
+5. Access your dashboard through the provided URL
 
 ## Project Structure
 
