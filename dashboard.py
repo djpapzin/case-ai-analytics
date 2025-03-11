@@ -12,6 +12,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Set Gemini API key from environment or Streamlit secrets
+if 'GEMINI_API_KEY' not in os.environ:
+    os.environ['GEMINI_API_KEY'] = st.secrets.GEMINI_API_KEY
+
 # Set page config
 st.set_page_config(
     page_title="Case Management Dashboard",
@@ -31,7 +35,11 @@ if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 if 'chatbot' not in st.session_state:
-    st.session_state.chatbot = CaseChatbot(api_url=API_URL)
+    try:
+        st.session_state.chatbot = CaseChatbot(api_url="https://case-management-ai.onrender.com/api")
+    except Exception as e:
+        st.error(f"Error initializing chatbot: {str(e)}")
+        st.session_state.chatbot = None
 
 # Mock data generation for when API is unavailable
 def generate_mock_data(num_cases=100):

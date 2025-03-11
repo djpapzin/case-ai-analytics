@@ -10,37 +10,62 @@ import os
 from dotenv import load_dotenv
 import pandas as pd
 import requests
+import google.generativeai as genai
 
 # Load environment variables
 load_dotenv()
 
 class CaseChatbot:
-    def __init__(self, api_url: str = "http://localhost:8000"):
-        self.messages = []
+    def __init__(self, api_url=None):
         self.api_url = api_url
-        self.chat_model = None
-        self._initialize_chat_model()
-
-    def _initialize_chat_model(self) -> None:
-        """Initialize the chat model with fallback strategy."""
-        try:
-            gemini_key = os.getenv("GEMINI_API_KEY")
-            if not gemini_key:
-                print("No Gemini API key found")
-                return
-
-            # Initialize Gemini with correct model name
-            self.chat_model = ChatGoogleGenerativeAI(
-                model="gemini-2.0-flash",  
-                gemini_api_key=gemini_key,
-                temperature=0.7,
-                convert_system_message_to_human=True
-            )
-            print("Successfully initialized Gemini model")
+        self.conversation_history = []
+        
+        # Get API key from environment
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        if not gemini_key:
+            raise ValueError("GEMINI_API_KEY not found in environment variables")
             
+        # Configure Gemini
+        genai.configure(api_key=gemini_key)
+        
+        # Initialize the chat model
+        try:
+            self.model = genai.GenerativeModel('gemini-2.0-flash')
+            self.chat = self.model.start_chat(history=[])
         except Exception as e:
             print(f"Error initializing chat model: {str(e)}")
-            self.chat_model = None
+            self.chat = None
+        
+    def get_response_with_context(self, user_input):
+        try:
+            if not self.chat:
+                return "Chat model not initialized. Please check your API key."
+                
+            # Add user input to conversation history
+            self.conversation_history.append({"role": "user", "content": user_input})
+            
+            # Get response from chat model
+            response = self.chat.send_message(user_input)
+            
+            # Extract just the content from the response
+            if hasattr(response, 'text'):
+                response_text = response.text
+            else:
+                # If response is a string containing content=, extract just the content part
+                import re
+                match = re.search(r"content='([^']*)'", str(response))
+                response_text = match.group(1) if match else str(response)
+            
+            # Add response to conversation history
+            self.conversation_history.append({"role": "assistant", "content": response_text})
+            
+            return response_text
+        except Exception as e:
+            print(f"Error getting response: {str(e)}")
+            return f"I apologize, but I'm currently unable to process your request. Error: {str(e)}"
+    
+    def reset_conversation(self):
+        self.conversation_history = []
 
     def _fetch_case_data(self):
         """Fetch case data from the API."""
@@ -77,21 +102,30 @@ class CaseChatbot:
     
     def get_response(self, user_input: str) -> str:
         """Get response from the chat model using the new LangChain patterns."""
-        if not self.chat_model:
+        if not self.chat:
             return ("I apologize, but I'm currently unable to process your request. "
                    "Please check that your GEMINI_API_KEY is correctly set in the environment variables.")
 
         try:
             # Add user message to history
-            self.messages.append(HumanMessage(content=user_input))
+            self.conversation_history.append({"role": "user", "content": user_input})
             
             # Create a simple response using the chat model directly
-            response = self.chat_model.invoke(user_input)
+            response = self.chat.send_message(user_input)
+            
+            # Extract just the content from the response
+            if hasattr(response, 'text'):
+                response_text = response.text
+            else:
+                # If response is a string containing content=, extract just the content part
+                import re
+                match = re.search(r"content='([^']*)'", str(response))
+                response_text = match.group(1) if match else str(response)
             
             # Add AI response to history
-            self.messages.append(AIMessage(content=str(response)))
+            self.conversation_history.append({"role": "assistant", "content": response_text})
             
-            return str(response)
+            return response_text
 
         except Exception as e:
             error_msg = f"Error getting response: {str(e)}"
@@ -101,7 +135,7 @@ class CaseChatbot:
 
     def clear_history(self) -> None:
         """Clear conversation history."""
-        self.messages = []
+        self.conversation_history = []
 
     def get_response_with_context(self, user_input: str) -> str:
         """Get a response from the chatbot based on user input."""
@@ -134,4 +168,4 @@ class CaseChatbot:
 
     def reset_conversation(self) -> None:
         """Reset the conversation history."""
-        self.messages = [] 
+        self.conversation_history = [] 
