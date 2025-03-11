@@ -12,6 +12,7 @@ This project consists of three main parts:
 1. **Machine Learning Model**: Predicts case outcomes based on case management system data.
 2. **AI Agent for Case Insights**: Provides actionable insights from the case management data.
 3. **Interactive AI Assistant**: Chatbot interface for natural language interactions with the system.
+4. **Cloud Deployment**: Backend API on Render.com and frontend dashboard on Streamlit Cloud.
 
 ## Components
 
@@ -19,8 +20,22 @@ This project consists of three main parts:
 - **Data Processing**: Preprocessing and feature engineering (`data_processor.py`)
 - **Model Training**: Random Forest classifier for prediction (`model_trainer.py`) 
 - **Case Insights**: AI agent that provides insights on case data (`case_insights.py`)
-- **API Server**: FastAPI implementation for model and insights access (`api.py`)
-- **AI Chatbot**: LangChain-based chatbot for interactive case analysis (`case_chatbot.py`)
+- **API Server**: FastAPI implementation for model and insights access (`api/index.py`)
+- **AI Chatbot**: LangChain-based chatbot for interactive case analysis (`src/agent/case_chatbot.py`)
+- **Cloud Deployment**: Configuration for Render.com and Streamlit Cloud deployment
+
+## Live Deployment
+
+- **Dashboard**: [Streamlit Cloud Dashboard](https://case-management-ai.streamlit.app/)
+- **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
+
+### API Endpoints
+
+- **GET /api** - Welcome page and status check
+- **GET /api/cases** - Retrieve case data
+- **GET /api/metrics** - Get current system metrics
+- **GET /api/insights** - Get insights from case data
+- **POST /api/chat** - Interact with the AI chatbot
 
 ## Deployment
 
@@ -74,32 +89,33 @@ streamlit run dashboard.py
 
 ```bash
 # Create conda environment
-conda create -n ai-automation python=3.11 -y
+conda create -n ai-automation python=3.12 -y
 
 # Activate the environment
 conda activate ai-automation
 
 # Install dependencies
-pip install pandas numpy scikit-learn matplotlib seaborn faker fastapi uvicorn langchain langchain-google-genai langchain-openai python-dotenv
+pip install -r requirements.txt
 ```
 
 ## Usage
 
-The API server can be started using the provided PowerShell scripts and will be available at port 8000.
+The API server can be started using the following command and will be available at port 8000:
+
+```bash
+cd api && python -m uvicorn index:app --host 0.0.0.0 --port 8000
+```
+
+To run the Streamlit dashboard locally:
+
+```bash
+python -m streamlit run dashboard.py
+```
 
 ### Server Scripts
 
-- **run_server.ps1** - Runs the API server with the Conda environment activated
-- **run_api_server.ps1** - Alternative script to run the server with more detailed configuration
-
-### API Endpoints
-
-- **GET /** - Welcome page and status check
-- **POST /predict** - Make case resolution predictions
-- **GET /insights** - Get insights from case data
-- **GET /metrics** - Get current system metrics
-- **GET /cases** - Retrieve case data
-- **GET /model-info** - Get information about the trained model
+- **run_api.bat** - Runs the API server on Windows
+- **Procfile** - Configuration for Render.com deployment
 
 ### AI Assistant
 
@@ -121,52 +137,28 @@ The chatbot supports two language models:
    - Optional fallback option
    - Requires OpenAI API key
 
-### Making Predictions
+## Cloud Deployment
 
-The prediction endpoint uses a Random Forest model trained on case management data. The model primarily considers the following features:
-- Case type
-- Case complexity
-- Client age
-- Client income level
-- Days the case has been open
-- Escalation status
+### Backend Deployment (Render.com)
 
-Example request:
+The FastAPI backend is deployed on Render.com, providing:
+- 24/7 availability
+- Automatic scaling
+- Global access
+- Secure API endpoints
 
-```json
-{
-  "case_type": "Family Law",
-  "complexity": "Medium",
-  "client_age": 35,
-  "client_income_level": "Medium",
-  "days_open": 30,
-  "escalated": false
-}
-```
+Configuration files:
+- `Procfile` - Defines the command to start the server
+- `render.yaml` - Defines the service configuration
+- `runtime.txt` - Specifies the Python version
 
-Example response:
+### Frontend Deployment (Streamlit Cloud)
 
-```json
-{
-  "prediction": "Resolved",
-  "probability": 0.792611113127238
-}
-```
-
-### Getting Insights
-
-Example request:
-
-```json
-{
-  "insight_type": "common_case_types"
-}
-```
-
-Valid insight types:
-- `common_case_types`
-- `resolution_factors`
-- `assignee_performance`
+The Streamlit dashboard is deployed on Streamlit Cloud, providing:
+- Interactive web interface
+- Real-time data visualization
+- Secure access to the API
+- Integrated AI chatbot
 
 ## Testing
 
@@ -175,42 +167,29 @@ Valid insight types:
 You can test the API using curl:
 
 ```bash
-curl http://localhost:8000/
+curl https://case-management-ai.onrender.com/api
 ```
 
-For prediction:
+For the cases endpoint:
 
 ```bash
-curl -X POST http://localhost:8000/predict \
+curl https://case-management-ai.onrender.com/api/cases
+```
+
+For the chatbot:
+
+```bash
+curl -X POST https://case-management-ai.onrender.com/api/chat \
   -H "Content-Type: application/json" \
-  -d '{"case_type": "Family Law", "complexity": "Medium", "client_age": 35, "client_income_level": "Medium", "days_open": 30, "escalated": false}'
-```
-
-### Using the test scripts
-
-The project includes Python test scripts to verify API functionality:
-
-- `test_api.py` - Tests all API endpoints
-- `test_prediction.py` - Focuses specifically on testing the prediction endpoint with various case scenarios
-
-Run tests with:
-
-```bash
-python test_api.py
-python test_prediction.py
+  -d '{"message": "How many active cases do we have?"}'
 ```
 
 ## Project Structure
 
-- `data_generator.py` - Generates synthetic case management data
-- `data_processor.py` - Preprocesses data for model training
-- `model_trainer.py` - Trains and evaluates the predictive model
-- `case_insights.py` - Provides insights and analysis of case data
-- `case_chatbot.py` - AI-powered chatbot interface
-- `main.py` - Main script to run the complete workflow
-- `api.py` - FastAPI implementation for model and insights access
+- `api/index.py` - FastAPI implementation for model and insights access
+- `src/agent/case_chatbot.py` - AI-powered chatbot interface
 - `dashboard.py` - Streamlit dashboard with integrated AI assistant
-- `run_server.ps1` - Primary script to run the API server
-- `run_api_server.ps1` - Alternative script to run the API server
-- `test_api.py` - Script to test all API endpoints
-- `test_prediction.py` - Script to test the prediction endpoint 
+- `Procfile` - Render deployment configuration
+- `render.yaml` - Render service definition
+- `runtime.txt` - Python version specification
+- `requirements.txt` - Python dependencies 

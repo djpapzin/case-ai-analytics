@@ -6,4 +6,4 @@ alwaysApply: false
 
 # Your rule content
 
-- Kill all all processes and restart the server
+- server is running with nohup

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: case-management-ai
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd api && uvicorn index:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+    autoDeploy: true
+    healthCheckPath: /api
+    plan: free 
