@@ -1,13 +1,15 @@
 # Project Understanding & Progress
 
 ## Live Demo
-🔗 [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
+🔗 [AI-Powered Legal Case Management System](https://case-management-ai.streamlit.app/)
+🔗 [API Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Project Overview
-This project implements a machine learning solution for case management, consisting of three main components:
+This project implements a machine learning solution for case management, consisting of four main components:
 1. A predictive model for case outcomes
 2. An AI agent for extracting insights from case data
 3. An interactive AI chatbot for natural language interactions
+4. A cloud-based deployment architecture with Render.com and Streamlit Cloud
 
 ## Current Progress
 
@@ -75,6 +77,27 @@ This project implements a machine learning solution for case management, consist
   - Metrics and insights integration
   - Error handling and fallback strategies
 
+### ✅ Cloud Deployment
+- **Backend Deployment (Render.com)**:
+  - FastAPI application deployed to Render.com
+  - 24/7 availability with automatic scaling
+  - Secure API endpoints with CORS support
+  - Configuration files:
+    - Procfile for command definition
+    - render.yaml for service configuration
+    - runtime.txt for Python version specification
+- **Frontend Deployment (Streamlit Cloud)**:
+  - Dashboard deployed to Streamlit Cloud
+  - Real-time connection to backend API
+  - Interactive visualization and filtering
+  - Integrated AI chatbot interface
+- **API Endpoints**:
+  - GET /api - Welcome page and status check
+  - GET /api/cases - Retrieve case data
+  - GET /api/metrics - Get current system metrics
+  - GET /api/insights - Get insights from case data
+  - POST /api/chat - Interact with the AI chatbot
+
 ### ✅ Documentation
 - **Code Documentation**:
   - Comprehensive docstrings
@@ -85,6 +108,7 @@ This project implements a machine learning solution for case management, consist
   - API setup and configuration guides
   - Data verification procedures
   - Preprocessing verification guide
+  - Cloud deployment documentation
 - **Progress Tracking**:
   - Checklist of completed items
   - Identified next steps
@@ -123,6 +147,7 @@ This project implements a machine learning solution for case management, consist
 - Feature engineering significantly improved model performance
 - AI chatbot provides intuitive access to insights
 - Multiple LLM support ensures reliable operation
+- Cloud deployment provides 24/7 availability and scalability
 
 ## Challenges & Solutions
 1. **Data Processing**:
@@ -140,6 +165,10 @@ This project implements a machine learning solution for case management, consist
 4. **System Architecture**:
    - Challenge: Real-time performance
    - Solution: Efficient API design and caching
+
+5. **Cloud Deployment**:
+   - Challenge: Ensuring consistent environment across platforms
+   - Solution: Standardized configuration files and dependency management
 
 ## Future Improvements
 1. **Data Enhancement**:
@@ -160,4 +189,10 @@ This project implements a machine learning solution for case management, consist
 4. **Infrastructure**:
    - Scale for larger datasets
    - Implement distributed processing
-   - Add monitoring and alerting 
+   - Add monitoring and alerting
+   
+5. **Cloud Optimization**:
+   - Implement caching strategies
+   - Add CDN for static assets
+   - Set up automated backups
+   - Implement blue-green deployment 

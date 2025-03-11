@@ -37,10 +37,29 @@ An AI-powered legal case management system that helps law firms and legal depart
 - **Dashboard**: [Streamlit Cloud Dashboard](https://case-management-ai.streamlit.app/)
 - **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
 
+## Cloud Deployment
+
+The system is deployed using a modern cloud architecture:
+
+### Backend (Render.com)
+- FastAPI application deployed on Render.com
+- Automatic scaling based on demand
+- Continuous deployment from GitHub
+- Environment variables for API keys
+- Health checks and monitoring
+
+### Frontend (Streamlit Cloud)
+- Streamlit dashboard hosted on Streamlit Cloud
+- Automatic updates from GitHub repository
+- Custom domain configuration
+- Responsive design for all devices
+
+For detailed deployment instructions, see [Cloud Deployment Guide](docs/CLOUD_DEPLOYMENT.md).
+
 ## Getting Started
 
 ### Prerequisites
-- Python 3.12+
+- Python 3.10+
 - pip (Python package manager)
 - Google Gemini API key (free) or OpenAI API key (paid)
 
