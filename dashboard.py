@@ -24,8 +24,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # API configuration
-# API_URL = "https://ai-automation-geyi53q75-djpapzins-projects.vercel.app"  # Production API URL
-API_URL = "https://case-management-ai.onrender.com"  # Render.com deployment
+API_URL = "https://case-management-ai.onrender.com/api"  # Render.com deployment
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
@@ -119,7 +118,7 @@ def generate_mock_insights(df):
 def fetch_data(endpoint: str, fallback_data: dict = None) -> dict:
     """Fetch data from API with graceful fallback to mock data."""
     try:
-        response = requests.get(f"{API_URL}/{endpoint}", timeout=5)
+        response = requests.get(f"{API_URL}/{endpoint}", timeout=15)  # Increased timeout to 15 seconds
         if response.status_code == 200:
             return response.json()
         raise Exception(f"API returned status code {response.status_code}")
@@ -131,7 +130,7 @@ def fetch_cases():
     """Fetch cases from the API or use mock data"""
     try:
         with st.spinner("Fetching case data..."):
-            response = requests.get(f"{API_URL}/cases", timeout=5)
+            response = requests.get(f"{API_URL}/cases", timeout=15)  # Increased timeout to 15 seconds
             if response.status_code == 200:
                 data = response.json()
                 df = pd.DataFrame(data)
@@ -152,7 +151,7 @@ def fetch_metrics():
     """Fetch metrics from the API or calculate from mock data"""
     try:
         with st.spinner("Fetching metrics..."):
-            response = requests.get(f"{API_URL}/metrics", timeout=5)
+            response = requests.get(f"{API_URL}/metrics", timeout=15)  # Increased timeout to 15 seconds
             if response.status_code == 200:
                 return response.json()
             else:
@@ -168,7 +167,7 @@ def fetch_insights():
     """Fetch insights from the API or generate from mock data"""
     try:
         with st.spinner("Fetching insights..."):
-            response = requests.get(f"{API_URL}/insights", timeout=5)
+            response = requests.get(f"{API_URL}/insights", timeout=15)  # Increased timeout to 15 seconds
             if response.status_code == 200:
                 return response.json()
             else:

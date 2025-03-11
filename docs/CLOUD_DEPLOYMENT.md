@@ -39,7 +39,7 @@ The following files are required for Render.com deployment:
            value: 3.10.0
          - key: OPENAI_API_KEY
            sync: false
-         - key: GOOGLE_API_KEY
+         - key: GEMINI_API_KEY
            sync: false
        autoDeploy: true
        healthCheckPath: /api
@@ -68,7 +68,7 @@ The following files are required for Render.com deployment:
 3. **Set Environment Variables**
    - PYTHON_VERSION: 3.10.0
    - OPENAI_API_KEY: Your OpenAI API key (if using OpenAI)
-   - GOOGLE_API_KEY: Your Google API key (if using Gemini)
+   - GEMINI_API_KEY: Your Gemini API key (if using Gemini)
 
 4. **Deploy**
    - Click "Create Web Service"
