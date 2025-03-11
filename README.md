@@ -12,6 +12,7 @@ An AI-powered legal case management system that helps law firms and legal depart
 - 👥 Resource allocation suggestions
 - 💬 AI Assistant chatbot for case insights
 - 🔄 Automatic model fallback (Gemini/OpenAI)
+- ☁️ Cloud-based deployment with Render and Streamlit Cloud
 
 ## Architecture
 
@@ -21,6 +22,7 @@ An AI-powered legal case management system that helps law firms and legal depart
 - SQLite database for data storage
 - Python-based data processing pipeline
 - LangChain for AI chat capabilities
+- Deployed on Render.com for 24/7 availability
 
 ### Frontend
 - Streamlit dashboard
@@ -28,6 +30,12 @@ An AI-powered legal case management system that helps law firms and legal depart
 - Real-time updates
 - Responsive design
 - Integrated AI chatbot interface
+- Hosted on Streamlit Cloud
+
+## Live Demo
+
+- **Dashboard**: [Streamlit Cloud Dashboard](https://case-management-ai.streamlit.app/)
+- **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Getting Started
 
@@ -79,39 +87,66 @@ python app.py --generate-data
 python app.py --train-model
 ```
 
-5. Start the API server:
+5. Start the API server locally:
 ```bash
-python app.py --run-server
+cd api && python -m uvicorn index:app --host 0.0.0.0 --port 8000
 ```
 
-6. Run the dashboard:
+6. Run the dashboard locally:
 ```bash
 python -m streamlit run dashboard.py
 ```
 
 The dashboard will be available at http://localhost:8501
 
+## Deployment
+
+### Backend Deployment (Render.com)
+
+1. Fork or clone this repository to your GitHub account
+2. Sign up for [Render.com](https://render.com/)
+3. Create a new Web Service and connect your GitHub repository
+4. Configure the service:
+   - Name: case-management-api
+   - Environment: Python
+   - Build Command: `pip install -r requirements.txt`
+   - Start Command: `cd api && uvicorn index:app --host 0.0.0.0 --port $PORT`
+5. Add environment variables if using the chatbot:
+   - GEMINI_API_KEY: Your Google Gemini API key
+   - OPENAI_API_KEY: Your OpenAI API key (optional)
+
+### Frontend Deployment (Streamlit Cloud)
+
+1. Sign up for [Streamlit Cloud](https://streamlit.io/cloud)
+2. Connect your GitHub repository
+3. Configure the app:
+   - Main file path: `dashboard.py`
+   - Add the same environment variables as the backend if needed
+
 ## Project Structure
 
 ```
 case-management-ai/
+├── api/               # FastAPI backend
+│   ├── index.py       # Main API file
+│   └── vercel.py      # Vercel configuration
 ├── src/
-│   ├── api/            # FastAPI endpoints
-│   ├── data/           # Data processing and generation
-│   ├── model/          # ML model implementation
-│   └── utils/          # Helper functions
-├── docs/               # Documentation
-├── tests/              # Test files
-├── config/             # Configuration files
-├── scripts/            # Utility scripts
-├── app.py             # Main application
+│   ├── agent/         # AI agent implementation
+│   ├── data/          # Data processing and generation
+│   ├── model/         # ML model implementation
+│   └── utils/         # Helper functions
+├── docs/              # Documentation
+├── tests/             # Test files
 ├── dashboard.py       # Streamlit dashboard
+├── Procfile           # Render deployment configuration
+├── render.yaml        # Render service definition
+├── runtime.txt        # Python version specification
 └── requirements.txt   # Python dependencies
 ```
 
 ## Usage
 
-1. Access the dashboard at http://localhost:8501
+1. Access the dashboard at https://case-management-ai.streamlit.app/ or http://localhost:8501 locally
 2. Use the sidebar filters to analyze specific case types
 3. View real-time metrics and insights
 4. Use the AI Assistant tab for interactive case analysis
@@ -161,4 +196,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Thanks to all contributors
 - Built with Python, FastAPI, and Streamlit
-- Powered by scikit-learn 
+- Powered by scikit-learn and LangChain
+- Hosted on Render.com and Streamlit Cloud 
