@@ -60,3 +60,4 @@ nohup.out
 feature_importance.png
 case_trends.png 
 .vercel
+.streamlit/secrets.toml
