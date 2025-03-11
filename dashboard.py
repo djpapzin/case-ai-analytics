@@ -18,7 +18,7 @@ st.set_page_config(
 # Set to None to use mock data, or set to your API URL
 # API_URL = None  # Use mock data
 # API_URL = "http://localhost:8000"  # Local development
-API_URL = "https://case-management-api.onrender.com"  # Render deployment
+API_URL = "https://case-management-ai.onrender.com"  # Render deployment
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
