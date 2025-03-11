@@ -24,7 +24,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # API configuration
-API_URL = "https://ai-automation-geyi53q75-djpapzins-projects.vercel.app"  # Production API URL
+# API_URL = "https://ai-automation-geyi53q75-djpapzins-projects.vercel.app"  # Production API URL
+API_URL = "https://case-management-ai.onrender.com"  # Render.com deployment
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
