@@ -1,0 +1,10 @@
+[33mcommit 372a342581e4266a7f373fd7b593d16253ab972f[m
+Author: djpapzin <your-email@example.com>
+Date:   Mon Mar 10 07:58:31 2025 +0200
+
+    Deploy API to Vercel and update dashboard with production API URL
+
+api/main.py
+dashboard.py
+requirements.txt
+vercel.json
