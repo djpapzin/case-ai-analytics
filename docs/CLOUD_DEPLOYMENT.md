@@ -16,7 +16,7 @@ This guide details the deployment process for the Case Management AI System usin
 
 ### Frontend (Streamlit Cloud)
 - Streamlit dashboard deployed on Streamlit Cloud
-- Production URL: https://case-management-ai.streamlit.app/
+- Production URL: https://ai-powered-legal-case-management-system.streamlit.app/
 - Features:
   - Real-time connection to Render.com API
   - Interactive visualizations

@@ -40,7 +40,7 @@ An AI-powered legal case management system that helps law firms and legal depart
 
 ## Live Demo
 
-- **Dashboard**: [Streamlit Cloud Dashboard](https://case-management-ai.streamlit.app/)
+- **Dashboard**: [Streamlit Cloud Dashboard](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Cloud Deployment
@@ -184,7 +184,7 @@ case-management-ai/
 
 ## Usage
 
-1. Access the dashboard at https://case-management-ai.streamlit.app/ or http://localhost:8501 locally
+1. Access the dashboard at https://ai-powered-legal-case-management-system.streamlit.app/ or http://localhost:8501 locally
 2. Use the sidebar filters to analyze specific case types
 3. View real-time metrics and insights
 4. Use the AI Assistant tab for interactive case analysis

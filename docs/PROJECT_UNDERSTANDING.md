@@ -1,7 +1,7 @@
 # Project Understanding & Progress
 
 ## Live Demo
-🔗 [AI-Powered Legal Case Management System](https://case-management-ai.streamlit.app/)
+🔗 [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
 🔗 [API Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Project Overview

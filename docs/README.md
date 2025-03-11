@@ -3,7 +3,7 @@
 ML-powered system for predicting case outcomes and extracting insights from case management data. Uses Random Forest for resolution prediction and provides analysis on case types, resolution factors, and assignee performance. Includes FastAPI server for API access and an AI-powered chatbot interface.
 
 ## Live System
-- **Dashboard**: [Live Demo](https://case-management-ai.streamlit.app/)
+- **Dashboard**: [Live Demo](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Production Endpoint](https://case-management-ai.onrender.com/api)
 
 ## Project Overview
@@ -26,7 +26,7 @@ This project consists of three main parts:
 
 ## Live Deployment
 
-- **Dashboard**: [Streamlit Cloud Dashboard](https://case-management-ai.streamlit.app/)
+- **Dashboard**: [Streamlit Cloud Dashboard](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
 
 ### API Endpoints
@@ -60,7 +60,7 @@ The FastAPI backend is deployed on Render.com for reliable operation:
 
 ### Frontend Dashboard (Streamlit)
 The Streamlit dashboard is deployed on Streamlit Cloud:
-- **Live URL**: https://case-management-ai.streamlit.app/
+- **Live URL**: https://ai-powered-legal-case-management-system.streamlit.app/
 - **Features**:
   - Real-time integration with Render.com API
   - Interactive visualizations
