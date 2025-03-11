@@ -7,6 +7,7 @@ This guide details the deployment process for the Case Management AI System usin
 ### Backend (Render.com)
 - FastAPI application deployed on Render.com
 - Production URL: https://case-management-ai.onrender.com/api
+- API Documentation: https://case-management-ai.onrender.com/docs
 - Advantages over previous serverless setup:
   - Better Python support
   - Improved cold start times

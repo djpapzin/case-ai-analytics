@@ -3,6 +3,7 @@
 ## Live Demo
 🔗 [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app/)
 🔗 [API Endpoint](https://case-management-ai.onrender.com/api)
+🔗 [API Documentation (Swagger UI)](https://case-management-ai.onrender.com/docs)
 
 ## Project Overview
 This project implements a machine learning solution for case management, consisting of four main components:

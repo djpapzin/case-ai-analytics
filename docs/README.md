@@ -5,6 +5,7 @@ ML-powered system for predicting case outcomes and extracting insights from case
 ## Live System
 - **Dashboard**: [Live Demo](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Production Endpoint](https://case-management-ai.onrender.com/api)
+- **API Documentation**: [Swagger UI](https://case-management-ai.onrender.com/docs)
 
 ## Project Overview
 
@@ -28,6 +29,7 @@ This project consists of three main parts:
 
 - **Dashboard**: [Streamlit Cloud Dashboard](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
+- **API Documentation**: [Interactive Swagger UI](https://case-management-ai.onrender.com/docs)
 
 ### API Endpoints
 

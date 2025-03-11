@@ -5,6 +5,7 @@ An AI-powered legal case management system that helps law firms and legal depart
 ## Live Demo 🚀
 - **Dashboard**: [AI-Powered Legal Case Management System](https://ai-powered-legal-case-management-system.streamlit.app)
 - **API**: [Case Management API](https://case-management-ai.onrender.com/api)
+- **API Documentation**: [Swagger UI](https://case-management-ai.onrender.com/docs)
 
 ## Features
 
@@ -42,6 +43,7 @@ An AI-powered legal case management system that helps law firms and legal depart
 
 - **Dashboard**: [Streamlit Cloud Dashboard](https://ai-powered-legal-case-management-system.streamlit.app/)
 - **API**: [Render API Endpoint](https://case-management-ai.onrender.com/api)
+- **API Documentation**: [Interactive Swagger UI](https://case-management-ai.onrender.com/docs)
 
 ## Cloud Deployment
 
